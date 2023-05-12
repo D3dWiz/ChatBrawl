@@ -9,12 +9,14 @@ import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.Printer;
 import be.woutzah.chatbrawl.util.SchedulerUtil;
+import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public abstract class Race implements Raceable, Announceable, Listener {
@@ -24,14 +26,16 @@ public abstract class Race implements Raceable, Announceable, Listener {
     protected final RaceType type;
     private final Sound beginSound;
     private final int chance;
-    private final int duration;
+    public final int duration;
     protected LeaderboardManager leaderboardManager;
     protected RaceManager raceManager;
     protected SettingManager settingManager;
     protected RewardManager rewardManager;
     protected TimeManager timeManager;
     protected BukkitTask raceTask;
+    protected @Nullable BossBar activeBossBar;
     protected BukkitTask actionBarTask;
+    protected BukkitTask bossBarTask;
     private boolean isActive;
 
     public Race(RaceType type, RaceManager raceManager, SettingManager settingManager,
@@ -56,6 +60,13 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     @Override
+    public void stopBossBar() {
+        bossBarTask.cancel();
+        Bukkit.getServer().hideBossBar(this.activeBossBar);
+        this.activeBossBar = null;
+    }
+
+    @Override
     public void stopActionBar() {
         actionBarTask.cancel();
     }
@@ -69,6 +80,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
     public void afterRaceEnd() {
         timeManager.stopTimer();
         if (isSoundEnabled()) playSound(endSound);
+        if (isBossBarEnabled()) stopBossBar();
         if (isActionBarEnabled()) stopActionBar();
         raceManager.setCurrentRunningRace(RaceType.NONE);
         isActive = false;
@@ -103,6 +115,10 @@ public abstract class Race implements Raceable, Announceable, Listener {
         return settingManager.getBoolean(type, RaceSetting.ENABLE_SOUND);
     }
 
+    protected boolean isBossBarEnabled() {
+        return settingManager.getBoolean(type, RaceSetting.ENABLE_BOSSBAR);
+    }
+
     protected boolean isActionBarEnabled() {
         return settingManager.getBoolean(type, RaceSetting.ENABLE_ACTIONBAR);
     }
@@ -135,9 +151,8 @@ public abstract class Race implements Raceable, Announceable, Listener {
         return chance;
     }
 
-    public int getDuration() {
-        return duration;
-    }
+    public int getDuration() { return duration; }
+    public int getDurationSeconds() { return settingManager.getInt(type, RaceSetting.DURATION); }
 
     protected boolean isActive() {
         return isActive;

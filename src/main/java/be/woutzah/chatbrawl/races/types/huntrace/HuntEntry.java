@@ -1,6 +1,5 @@
 package be.woutzah.chatbrawl.races.types.huntrace;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;

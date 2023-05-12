@@ -5,7 +5,6 @@ general:
     - ' \n'
     - '  &e&l>> &f/cb help &6- &7show the general help menu\n'
     - '  &e&l>> &f/cb current &6- &7show the current running race\n'
-    - '  &e&l>> &f/cb discord &6- &7link to official discord\n'
     - '  &e&l>> &f/cb disable &6- &7stop the creation of races\n'
     - '  &e&l>> &f/cb enable &6- &7start the creation of races\n'
     - '  &e&l>> &f/cb stop &6- &7stop the current running race\n'

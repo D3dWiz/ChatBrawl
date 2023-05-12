@@ -5,5 +5,6 @@ public interface Raceable {
     void beforeRaceStart();
 
     void afterRaceEnd();
+
     void disable();
 }

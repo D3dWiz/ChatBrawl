@@ -6,7 +6,6 @@ import be.woutzah.chatbrawl.leaderboard.users.TimeUser;
 import be.woutzah.chatbrawl.leaderboard.users.WinsUser;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import be.woutzah.chatbrawl.util.Printer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

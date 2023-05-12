@@ -19,8 +19,8 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -101,7 +101,7 @@ public class FoodRace extends ContestantRace {
             if (player.getGameMode() == GameMode.CREATIVE) return;
         }
         World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.toString())) return;
+        if (!raceManager.isWorldAllowed(world.getName())) return;
         ItemStack consumedItemstack = e.getItem();
         if (consumedItemstack.getType().equals(foodEntry.getMaterial())) {
             UUID uuid = player.getUniqueId();
@@ -137,16 +137,17 @@ public class FoodRace extends ContestantRace {
         }
         Printer.broadcast(messageList);
     }
-
     @Override
-    public void showActionbar() {
-        String message = replacePlaceholders(settingManager.getString(RaceType.FOOD, RaceSetting.LANGUAGE_ACTIONBAR));
+    public void showBossBar() {
+
+    }
+    @Override
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FOOD, RaceSetting.LANGUAGE_ACTIONBAR)));
         this.actionBarTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getOnlinePlayers().forEach(p -> p.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR,
-                                new TextComponent(Printer.parseColor(message))));
+                Bukkit.getServer().sendActionBar(message);
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
@@ -164,6 +165,6 @@ public class FoodRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomFoodEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isActionBarEnabled()) showActionbar();
+        if (isActionBarEnabled()) showActionBar();
     }
 }

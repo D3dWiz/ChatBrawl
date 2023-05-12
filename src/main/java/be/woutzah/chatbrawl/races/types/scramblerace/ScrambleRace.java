@@ -15,14 +15,14 @@ import be.woutzah.chatbrawl.settings.races.ScrambleRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -65,15 +65,12 @@ public class ScrambleRace extends Race {
         String shuffledWord = chars.toString()
                 .substring(1, 3 * chars.size() - 1)
                 .replaceAll(", ", "");
-        switch (difficulty) {
-            case 1:
-                return shuffledWord;
-            case 2:
-                return randomCase(shuffledWord);
-            case 3:
-                return swapInNumbers(randomCase(shuffledWord));
-        }
-        return null;
+        return switch (difficulty) {
+            case 1 -> shuffledWord;
+            case 2 -> randomCase(shuffledWord);
+            case 3 -> swapInNumbers(randomCase(shuffledWord));
+            default -> null;
+        };
     }
 
     private String randomCase(String word) {
@@ -100,11 +97,11 @@ public class ScrambleRace extends Race {
     public void beforeRaceStart() {
         initRandomWord();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isActionBarEnabled()) showActionbar();
+        if (isActionBarEnabled()) showActionBar();
     }
 
     @EventHandler
-    public void checkWordInChat(AsyncPlayerChatEvent e) {
+    public void checkWordInChat(AsyncChatEvent e) {
         //do checks
         if (!isActive()) return;
         Player player = e.getPlayer();
@@ -112,8 +109,8 @@ public class ScrambleRace extends Race {
             if (player.getGameMode() == GameMode.CREATIVE) return;
         }
         World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.toString())) return;
-        String message = Printer.stripColors(e.getMessage());
+        if (!raceManager.isWorldAllowed(world.getName())) return;
+        String message = Printer.stripColors(e.message().toString());
         if (raceManager.startsWithForbiddenCommand(message)) return;
         if (!message.equals(scrambleWord.getWord())) return;
         //when correct
@@ -155,14 +152,12 @@ public class ScrambleRace extends Race {
     }
 
     @Override
-    public void showActionbar() {
-        String message = replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_ACTIONBAR));
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_ACTIONBAR)));
         this.actionBarTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getOnlinePlayers().forEach(p -> p.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR,
-                                new TextComponent(Printer.parseColor(message))));
+                Bukkit.getServer().sendActionBar(message);
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
@@ -187,6 +182,12 @@ public class ScrambleRace extends Race {
             return;
         }
         Printer.broadcast(messageList);
+    }
+
+    @Override
+    public void showBossBar() {
+        String message = replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR));
+
     }
 
     @Override

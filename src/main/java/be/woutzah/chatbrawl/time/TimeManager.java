@@ -1,6 +1,7 @@
 package be.woutzah.chatbrawl.time;
 
 import be.woutzah.chatbrawl.ChatBrawl;
+import be.woutzah.chatbrawl.races.types.RaceType;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,6 +24,9 @@ public class TimeManager {
         stopTime = Instant.now();
     }
 
+    public int getRemainingTime(RaceType type) {
+        return (int) Duration.between(Instant.now(), startTime.plusSeconds(this.plugin.getRaceManager().getRace(type).getDurationSeconds())).getSeconds();
+    }
     public int getTotalSeconds() {
         return (int) Duration.between(startTime,stopTime).getSeconds();
     }

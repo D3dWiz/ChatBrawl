@@ -19,8 +19,8 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -31,7 +31,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -104,7 +103,7 @@ public class HuntRace extends ContestantRace {
 			if (player.getGameMode() == GameMode.CREATIVE) return;
 		}
 		World world = player.getWorld();
-		if (!raceManager.isWorldAllowed(world.toString())) return;
+		if (!raceManager.isWorldAllowed(world.getName())) return;
 		EntityType killedEntityType = e.getEntity().getType();
 		if (killedEntityType.equals(huntEntry.getEntityType())) {
 			UUID uuid = player.getUniqueId();
@@ -140,16 +139,17 @@ public class HuntRace extends ContestantRace {
 		}
 		Printer.broadcast(messageList);
 	}
-
 	@Override
-	public void showActionbar() {
-		String message = replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_ACTIONBAR));
+	public void showBossBar() {
+
+	}
+	@Override
+	public void showActionBar() {
+		Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_ACTIONBAR)));
 		this.actionBarTask = new BukkitRunnable() {
 			@Override
 			public void run() {
-				Bukkit.getOnlinePlayers().forEach(p -> p.spigot()
-						.sendMessage(ChatMessageType.ACTION_BAR,
-								new TextComponent(Printer.parseColor(message))));
+				Bukkit.getServer().sendActionBar(message);
 			}
 		}.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
 	}
@@ -167,6 +167,6 @@ public class HuntRace extends ContestantRace {
 		super.beforeRaceStart();
 		initRandomHuntEntry();
 		if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-		if (isActionBarEnabled()) showActionbar();
+		if (isActionBarEnabled()) showActionBar();
 	}
 }

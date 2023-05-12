@@ -61,7 +61,7 @@ public class ConfigManager{
             try {
                 config.save(file);
             } catch (IOException e) {
-                ErrorHandler.error("Something went wrong when initializing the configfiles!");
+                ErrorHandler.error("Something went wrong when initializing the config files!");
             }
             configMap.put(configType,config);
         });

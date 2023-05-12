@@ -44,7 +44,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         this.subCommandsList.add(new EnableCommand(plugin));
         this.subCommandsList.add(new StopCommand(plugin));
         this.subCommandsList.add(new StartCommand(plugin));
-        this.subCommandsList.add(new DiscordCommand());
         this.subCommandsList.add(new HelpCommand(plugin));
         this.subCommandsList.add(new ReloadCommand(plugin));
         this.subCommandsList.add(new LeaderboardCommand(plugin));
@@ -103,9 +102,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 List<String> suggestionList = new ArrayList<>();
                 List<String> tempList = new ArrayList<>();
                 switch (args.length) {
-                    case 1:
+                    case 1 -> {
                         tempList.add("help");
-                        tempList.add("discord");
                         tempList.add("leaderboard");
                         if (sender.hasPermission("cb.current") ||
                                 sender.hasPermission("cb.admin")) {
@@ -139,9 +137,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                                 .forEach(suggestionList::add);
                         Collections.sort(suggestionList);
                         return suggestionList;
-                    case 2:
+                    }
+                    case 2 -> {
                         switch (args[0].toLowerCase()) {
-                            case "start":
+                            case "start" -> {
                                 if (sender.hasPermission("cb.start") ||
                                         sender.hasPermission("cb.admin")) {
                                     Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
@@ -151,7 +150,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                                     Collections.sort(suggestionList);
                                 }
                                 return suggestionList;
-                            case "leaderboard":
+                            }
+                            case "leaderboard" -> {
                                 if (sender.hasPermission("cb.leaderboard") ||
                                         sender.hasPermission("cb.admin")) {
                                     tempList.add("user");
@@ -161,40 +161,41 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                                     Collections.sort(suggestionList);
                                 }
                                 return suggestionList;
-                            default:
+                            }
+                            default -> {
                                 return null;
+                            }
                         }
-                    case 3:
-                        switch (args[1].toLowerCase()) {
-                            case "race":
-                                if (sender.hasPermission("cb.leaderboard") ||
-                                        sender.hasPermission("cb.admin")) {
-                                    Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
-                                            .forEach(r -> tempList.add(r.toString().toLowerCase()));
-                                    tempList.stream().filter(s -> s.toLowerCase().startsWith(args[2].toLowerCase()))
-                                            .forEach(suggestionList::add);
-                                    Collections.sort(suggestionList);
-                                }
-                                return suggestionList;
-                            default:
-                                return null;
+                    }
+                    case 3 -> {
+                        if (args[1].toLowerCase().equals("race")) {
+                            if (sender.hasPermission("cb.leaderboard") ||
+                                    sender.hasPermission("cb.admin")) {
+                                Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
+                                        .forEach(r -> tempList.add(r.toString().toLowerCase()));
+                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[2].toLowerCase()))
+                                        .forEach(suggestionList::add);
+                                Collections.sort(suggestionList);
+                            }
+                            return suggestionList;
                         }
-                    case 4:
-                        switch (args[0].toLowerCase()) {
-                            case "leaderboard":
-                                if (sender.hasPermission("cb.leaderboard") ||
-                                        sender.hasPermission("cb.admin")) {
-                                    tempList.add("time");
-                                    tempList.add("wins");
-                                    tempList.add("total");
-                                    tempList.stream().filter(s -> s.toLowerCase().startsWith(args[3].toLowerCase()))
-                                            .forEach(suggestionList::add);
-                                    Collections.sort(suggestionList);
-                                }
-                                return suggestionList;
-                            default:
-                                return null;
+                        return null;
+                    }
+                    case 4 -> {
+                        if (args[0].toLowerCase().equals("leaderboard")) {
+                            if (sender.hasPermission("cb.leaderboard") ||
+                                    sender.hasPermission("cb.admin")) {
+                                tempList.add("time");
+                                tempList.add("wins");
+                                tempList.add("total");
+                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[3].toLowerCase()))
+                                        .forEach(suggestionList::add);
+                                Collections.sort(suggestionList);
+                            }
+                            return suggestionList;
                         }
+                        return null;
+                    }
                 }
             }
         return null;

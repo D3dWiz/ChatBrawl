@@ -101,7 +101,7 @@ public class CraftRace extends ContestantRace {
             if (player.getGameMode() == GameMode.CREATIVE) return;
         }
         World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.toString())) return;
+        if (!raceManager.isWorldAllowed(world.getName())) return;
         if (!(e.getWhoClicked().getInventory().firstEmpty() == -1)) {
             if (e.getSlotType() == InventoryType.SlotType.RESULT) {
                 ItemStack craftedItemStack;
@@ -156,7 +156,12 @@ public class CraftRace extends ContestantRace {
     }
 
     @Override
-    public void showActionbar() {
+    public void showBossBar() {
+
+    }
+
+    @Override
+    public void showActionBar() {
         String message = replacePlaceholders(settingManager.getString(RaceType.CRAFT, RaceSetting.LANGUAGE_ACTIONBAR));
         this.actionBarTask = new BukkitRunnable() {
             @Override
@@ -181,6 +186,6 @@ public class CraftRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomCraftEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isActionBarEnabled()) showActionbar();
+        if (isActionBarEnabled()) showActionBar();
     }
 }

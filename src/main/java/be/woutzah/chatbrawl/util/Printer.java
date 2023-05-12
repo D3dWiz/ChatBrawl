@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Printer {
-    private final static String DISCORDLINK = "https://discord.gg/TvTUWvG";
     public static final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     private final static int CENTER_PX = 154;
 
@@ -54,15 +53,6 @@ public class Printer {
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
         Bukkit.broadcast(parseColor(sb.toString()), "cb.default");
-    }
-
-    public static void sendDiscordMessage(CommandSender sender) {
-        String message = "&e&l>&7&m---------&e&l[ &6&oChatBrawl Discord &e&l]&7&m---------&e&l<\n" +
-                "      &fFor &esupport/issues&f or &esuggestions           \n" +
-                "           &fjoin our official discord!               \n" +
-                "          &d&o&n" + DISCORDLINK + "\n" +
-                "&e&l>&7&m------------------------------------&e&l<\n";
-        sendMessage(message, sender);
     }
 
     public static String centerMessage(List<String> textList) {

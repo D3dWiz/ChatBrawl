@@ -7,6 +7,7 @@ import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.ContestantRace;
+import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
@@ -19,8 +20,9 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -103,7 +105,7 @@ public class BlockRace extends ContestantRace {
             if (player.getGameMode() == GameMode.CREATIVE) return;
         }
         World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.toString())) return;
+        if (!raceManager.isWorldAllowed(world.getName())) return;
         Block minedBlock = e.getBlock();
         if (minedBlock.getType().equals(blockEntry.getMaterial())) {
             UUID uuid = player.getUniqueId();
@@ -131,7 +133,7 @@ public class BlockRace extends ContestantRace {
         List<String> messageList = settingManager.getStringList(RaceType.BLOCK, RaceSetting.LANGUAGE_WINNER)
                 .stream()
                 .map(this::replacePlaceholders)
-                .map(s -> s.replace("<displayname>", player.getDisplayName()))
+                .map(s -> s.replace("<displayname>", player.displayName().toString()))
                 .map(s -> s.replace("<player>", player.getName()))
                 .map(s -> s.replace("<time>", timeManager.getTimeString()))
                 .collect(Collectors.toList());
@@ -143,14 +145,34 @@ public class BlockRace extends ContestantRace {
     }
 
     @Override
-    public void showActionbar() {
-        String message = replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_ACTIONBAR));
+    public void showBossBar() {
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.BLOCK).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.BLOCK, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.BLOCK, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(RaceType.BLOCK);
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.BLOCK) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(bossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
+    }
+
+
+    @Override
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_ACTIONBAR)
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(timeManager.getRemainingTime(RaceType.BLOCK))))));
         this.actionBarTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getOnlinePlayers().forEach(p -> p.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR,
-                                new TextComponent(Printer.parseColor(message))));
+                Bukkit.getServer().sendActionBar(message);
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
@@ -161,7 +183,8 @@ public class BlockRace extends ContestantRace {
                 .replace("<block>", ChatBrawl.isLangUtilsIsEnabled() ?
                         LanguageHelper.getItemName(new ItemStack(blockEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
                         : blockEntry.getMaterial().toString().toLowerCase().replace("_", " "))
-                .replace("<amount>", String.valueOf(blockEntry.getAmount()));
+                .replace("<amount>", String.valueOf(blockEntry.getAmount()))
+                .replace("<prefix>", settingManager.getString(GeneralSetting.PLUGIN_PREFIX));
     }
 
     @Override
@@ -169,6 +192,7 @@ public class BlockRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomBlockEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isActionBarEnabled()) showActionbar();
+        if (isBossBarEnabled()) showBossBar();
+        if (isActionBarEnabled()) showActionBar();
     }
 }

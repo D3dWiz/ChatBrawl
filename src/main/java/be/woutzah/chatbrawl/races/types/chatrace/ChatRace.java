@@ -15,8 +15,8 @@ import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -58,19 +58,18 @@ public class ChatRace extends Race {
     public void beforeRaceStart() {
         initRandomWord();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isActionBarEnabled()) showActionbar();
+        if (isActionBarEnabled()) showActionBar();
     }
 
     @EventHandler
     public void checkWordInChat(AsyncPlayerChatEvent e) {
-        //do checks
         if (!isActive()) return;
         Player player = e.getPlayer();
         if (!raceManager.isCreativeAllowed()) {
             if (player.getGameMode() == GameMode.CREATIVE) return;
         }
         World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.toString())) return;
+        if (!raceManager.isWorldAllowed(world.getName())) return;
         String message = Printer.stripColors(e.getMessage());
         if (raceManager.startsWithForbiddenCommand(message)) return;
         if (!message.equals(wordToGuess.getWord())) return;
@@ -113,14 +112,16 @@ public class ChatRace extends Race {
     }
 
     @Override
-    public void showActionbar() {
-        String message = replacePlaceholders(settingManager.getString(RaceType.CHAT, RaceSetting.LANGUAGE_ACTIONBAR));
+    public void showBossBar() {
+
+    }
+    @Override
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.CHAT, RaceSetting.LANGUAGE_ACTIONBAR)));
         this.actionBarTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getOnlinePlayers().forEach(p -> p.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR,
-                                new TextComponent(Printer.parseColor(message))));
+                Bukkit.getServer().sendActionBar(message);
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
