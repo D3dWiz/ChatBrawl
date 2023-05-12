@@ -63,7 +63,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         SubCommand target = findSubCommand(args[0]);
 
         if (target == null) {
-            Printer.sendMessage(settingManager.getString(LanguageSetting.SUBCOMMAND_NOT_EXIST),sender);
+            Printer.sendMessage(settingManager.getString(LanguageSetting.SUBCOMMAND_NOT_EXIST), sender);
             return true;
         }
         if (!target.isCanConsoleUse() && !(sender instanceof Player)) {
@@ -72,7 +72,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
         if (!target.getPermission().equalsIgnoreCase("none")) {
             if (!sender.hasPermission(target.getPermission())) {
-                Printer.sendMessage(settingManager.getString(LanguageSetting.NO_PERMISSION),sender);
+                Printer.sendMessage(settingManager.getString(LanguageSetting.NO_PERMISSION), sender);
                 return true;
             }
         }
@@ -98,106 +98,106 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String string, @NotNull String[] args) {
-            if (sender.hasPermission("cb.default")) {
-                List<String> suggestionList = new ArrayList<>();
-                List<String> tempList = new ArrayList<>();
-                switch (args.length) {
-                    case 1 -> {
-                        tempList.add("help");
+        if (sender.hasPermission("cb.default")) {
+            List<String> suggestionList = new ArrayList<>();
+            List<String> tempList = new ArrayList<>();
+            switch (args.length) {
+                case 1 -> {
+                    tempList.add("help");
+                    tempList.add("leaderboard");
+                    if (sender.hasPermission("cb.current") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("current");
+                    }
+                    if (sender.hasPermission("cb.disable") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("disable");
+                    }
+                    if (sender.hasPermission("cb.enable") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("enable");
+                    }
+                    if (sender.hasPermission("cb.stop") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("stop");
+                    }
+                    if (sender.hasPermission("cb.start") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("start");
+                    }
+                    if (sender.hasPermission("cb.reload") ||
+                            sender.hasPermission("cb.admin")) {
+                        tempList.add("reload");
+                    }
+                    if (sender.hasPermission("cb.leaderboard") ||
+                            sender.hasPermission("cb.admin")) {
                         tempList.add("leaderboard");
-                        if (sender.hasPermission("cb.current") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("current");
-                        }
-                        if (sender.hasPermission("cb.disable") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("disable");
-                        }
-                        if (sender.hasPermission("cb.enable") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("enable");
-                        }
-                        if (sender.hasPermission("cb.stop") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("stop");
-                        }
-                        if (sender.hasPermission("cb.start") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("start");
-                        }
-                        if (sender.hasPermission("cb.reload") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("reload");
-                        }
-                        if (sender.hasPermission("cb.leaderboard") ||
-                                sender.hasPermission("cb.admin")) {
-                            tempList.add("leaderboard");
-                        }
-                        tempList.stream().filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
-                                .forEach(suggestionList::add);
-                        Collections.sort(suggestionList);
-                        return suggestionList;
                     }
-                    case 2 -> {
-                        switch (args[0].toLowerCase()) {
-                            case "start" -> {
-                                if (sender.hasPermission("cb.start") ||
-                                        sender.hasPermission("cb.admin")) {
-                                    Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
-                                            .forEach(r -> tempList.add(r.toString().toLowerCase()));
-                                    tempList.stream().filter(s -> s.toLowerCase().startsWith(args[1].toLowerCase()))
-                                            .forEach(suggestionList::add);
-                                    Collections.sort(suggestionList);
-                                }
-                                return suggestionList;
-                            }
-                            case "leaderboard" -> {
-                                if (sender.hasPermission("cb.leaderboard") ||
-                                        sender.hasPermission("cb.admin")) {
-                                    tempList.add("user");
-                                    tempList.add("race");
-                                    tempList.stream().filter(s -> s.toLowerCase().startsWith(args[1].toLowerCase()))
-                                            .forEach(suggestionList::add);
-                                    Collections.sort(suggestionList);
-                                }
-                                return suggestionList;
-                            }
-                            default -> {
-                                return null;
-                            }
-                        }
-                    }
-                    case 3 -> {
-                        if (args[1].toLowerCase().equals("race")) {
-                            if (sender.hasPermission("cb.leaderboard") ||
+                    tempList.stream().filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
+                            .forEach(suggestionList::add);
+                    Collections.sort(suggestionList);
+                    return suggestionList;
+                }
+                case 2 -> {
+                    switch (args[0].toLowerCase()) {
+                        case "start" -> {
+                            if (sender.hasPermission("cb.start") ||
                                     sender.hasPermission("cb.admin")) {
                                 Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
                                         .forEach(r -> tempList.add(r.toString().toLowerCase()));
-                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[2].toLowerCase()))
+                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[1].toLowerCase()))
                                         .forEach(suggestionList::add);
                                 Collections.sort(suggestionList);
                             }
                             return suggestionList;
                         }
-                        return null;
-                    }
-                    case 4 -> {
-                        if (args[0].toLowerCase().equals("leaderboard")) {
+                        case "leaderboard" -> {
                             if (sender.hasPermission("cb.leaderboard") ||
                                     sender.hasPermission("cb.admin")) {
-                                tempList.add("time");
-                                tempList.add("wins");
-                                tempList.add("total");
-                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[3].toLowerCase()))
+                                tempList.add("user");
+                                tempList.add("race");
+                                tempList.stream().filter(s -> s.toLowerCase().startsWith(args[1].toLowerCase()))
                                         .forEach(suggestionList::add);
                                 Collections.sort(suggestionList);
                             }
                             return suggestionList;
                         }
-                        return null;
+                        default -> {
+                            return null;
+                        }
                     }
                 }
+                case 3 -> {
+                    if (args[1].toLowerCase().equals("race")) {
+                        if (sender.hasPermission("cb.leaderboard") ||
+                                sender.hasPermission("cb.admin")) {
+                            Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
+                                    .forEach(r -> tempList.add(r.toString().toLowerCase()));
+                            tempList.stream().filter(s -> s.toLowerCase().startsWith(args[2].toLowerCase()))
+                                    .forEach(suggestionList::add);
+                            Collections.sort(suggestionList);
+                        }
+                        return suggestionList;
+                    }
+                    return null;
+                }
+                case 4 -> {
+                    if (args[0].toLowerCase().equals("leaderboard")) {
+                        if (sender.hasPermission("cb.leaderboard") ||
+                                sender.hasPermission("cb.admin")) {
+                            tempList.add("time");
+                            tempList.add("wins");
+                            tempList.add("total");
+                            tempList.stream().filter(s -> s.toLowerCase().startsWith(args[3].toLowerCase()))
+                                    .forEach(suggestionList::add);
+                            Collections.sort(suggestionList);
+                        }
+                        return suggestionList;
+                    }
+                    return null;
+                }
             }
+        }
         return null;
     }
 }

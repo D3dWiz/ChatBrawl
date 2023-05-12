@@ -112,7 +112,7 @@ public class LeaderboardUserDAO {
         return userList;
     }
 
-    public List<TimeUser> getFastestTimeForRace(RaceType raceType){
+    public List<TimeUser> getFastestTimeForRace(RaceType raceType) {
         List<TimeUser> userList = new ArrayList<>();
         String FASTESTTIMEFORRACE = "SELECT uuid, min(seconds) as time FROM leaderboard WHERE racetype=? group by uuid order by time ASC LIMIT 10";
         int index = 1;
@@ -135,8 +135,8 @@ public class LeaderboardUserDAO {
         return userList;
     }
 
-    public Map<RaceType,Integer> getMostWinsForUser(UUID uuid){
-        Map<RaceType,Integer> raceWinsMap = new HashMap<>();
+    public Map<RaceType, Integer> getMostWinsForUser(UUID uuid) {
+        Map<RaceType, Integer> raceWinsMap = new HashMap<>();
         String MOSTWINSFORUSER = "SELECT racetype, count(uuid) as wins FROM leaderboard WHERE uuid=? group by racetype order by wins ASC LIMIT 10";
         try (Connection con = databaseManager.getConnection();
              PreparedStatement stmt = con.prepareStatement(MOSTWINSFORUSER)) {
@@ -150,7 +150,7 @@ public class LeaderboardUserDAO {
                         ErrorHandler.error("&cCouldn't retrieve wins for user! --> invalid racetype");
                     }
                     int wins = rs.getInt("wins");
-                    raceWinsMap.put(racetype,wins);
+                    raceWinsMap.put(racetype, wins);
                 }
             }
         } catch (SQLException e) {
@@ -160,8 +160,8 @@ public class LeaderboardUserDAO {
         return raceWinsMap;
     }
 
-    public Map<RaceType,Integer> getFastestTimeForUser(UUID uuid){
-        Map<RaceType,Integer> raceTimesMap = new HashMap<>();
+    public Map<RaceType, Integer> getFastestTimeForUser(UUID uuid) {
+        Map<RaceType, Integer> raceTimesMap = new HashMap<>();
         String FASTESTTIMESFORUSER = "SELECT racetype, min(seconds) as time FROM leaderboard WHERE uuid=? group by racetype order by time DESC LIMIT 10";
         try (Connection con = databaseManager.getConnection();
              PreparedStatement stmt = con.prepareStatement(FASTESTTIMESFORUSER)) {
@@ -175,7 +175,7 @@ public class LeaderboardUserDAO {
                         ErrorHandler.error("&cCouldn't retrieve fastest times for user! --> invalid racetype");
                     }
                     int seconds = rs.getInt("time");
-                    raceTimesMap.put(racetype,seconds);
+                    raceTimesMap.put(racetype, seconds);
                 }
             }
         } catch (SQLException e) {

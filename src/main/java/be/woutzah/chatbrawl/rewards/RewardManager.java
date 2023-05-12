@@ -54,7 +54,7 @@ public class RewardManager {
         selectedReward.getCommands().forEach(command -> {
             command = command
                     .replace("<player>", player.getName());
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),command);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         });
         Printer.broadcast(selectedReward.getBroadcast()
                 .replace("<player>", player.getName()));
@@ -69,7 +69,7 @@ public class RewardManager {
         });
     }
 
-    private String replacePlaceholders(String input, Player player){
+    private String replacePlaceholders(String input, Player player) {
         return input.replace("<player>", player.getName())
                 .replace("<displayname>", player.getName());
     }

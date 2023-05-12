@@ -30,7 +30,7 @@ public class StopCommand extends SubCommand {
             return;
         }
         Race race = raceManager.getCurrentRace();
-        if(race == null) {
+        if (race == null) {
             Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.NO_RACE_RUNNING), sender);
             return;

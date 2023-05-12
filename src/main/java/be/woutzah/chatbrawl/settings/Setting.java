@@ -4,5 +4,6 @@ import be.woutzah.chatbrawl.files.ConfigType;
 
 public interface Setting {
     String getPath();
+
     ConfigType getConfigType();
 }

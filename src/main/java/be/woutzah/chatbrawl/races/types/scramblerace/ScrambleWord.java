@@ -4,11 +4,11 @@ import java.util.List;
 
 public class ScrambleWord {
     private final String word;
-    private  String scrambledWord;
+    private String scrambledWord;
     private final int difficulty;
     private final List<Integer> rewardIds;
 
-    public ScrambleWord(String word,int difficulty, List<Integer> rewardIds) {
+    public ScrambleWord(String word, int difficulty, List<Integer> rewardIds) {
         this.word = word;
         this.difficulty = difficulty;
         this.rewardIds = rewardIds;

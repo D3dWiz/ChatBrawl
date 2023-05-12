@@ -98,10 +98,10 @@ public class Printer {
         return ChatColor.translateAlternateColorCodes('&', translateHexCodes(text)).replace("\\n", "\n");
     }
 
-    public static String translateHexCodes (String textToTranslate) {
+    public static String translateHexCodes(String textToTranslate) {
         Matcher matcher = HEX_PATTERN.matcher(textToTranslate);
         StringBuffer buffer = new StringBuffer();
-        while(matcher.find()) {
+        while (matcher.find()) {
             matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of("#" + matcher.group(1)).toString());
         }
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
@@ -112,7 +112,7 @@ public class Printer {
         return ChatColor.stripColor(message);
     }
 
-    public static String capitalize(String text){
+    public static String capitalize(String text) {
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 }

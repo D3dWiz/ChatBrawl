@@ -32,7 +32,7 @@ public class LeaderboardCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if(leaderboardManager == null) {
+        if (leaderboardManager == null) {
             Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     "&cMySQL has not been configured!", player);
             return;

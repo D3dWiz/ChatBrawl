@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.EnumMap;
 
-public class ConfigManager{
+public class ConfigManager {
 
     private final ChatBrawl plugin;
     private final EnumMap<ConfigType, YamlConfiguration> configMap;
@@ -22,13 +22,13 @@ public class ConfigManager{
         saveDefaultSettings();
     }
 
-    public void saveDefaultSettings(){
-        if(!plugin.getDataFolder().exists()){
+    public void saveDefaultSettings() {
+        if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
         }
-        Arrays.stream(ConfigType.values()).forEach(configType ->{
+        Arrays.stream(ConfigType.values()).forEach(configType -> {
             String pathString = configType.getPath();
-            File file = new File(plugin.getDataFolder(),pathString );
+            File file = new File(plugin.getDataFolder(), pathString);
 
             if (!file.exists()) {
                 try {
@@ -39,7 +39,7 @@ public class ConfigManager{
                 }
             }
             InputStream inputStream = plugin.getResource(pathString);
-            if(inputStream == null) return;
+            if (inputStream == null) return;
             YamlConfiguration resourceConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream));
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             config.options().header("" +
@@ -50,10 +50,10 @@ public class ConfigManager{
                     " | |____| | | | (_| | |_| |_) | | | (_| |\\ V  V /| |\n" +
                     "  \\_____|_| |_|\\__,_|\\__|____/|_|  \\__,_| \\_/\\_/ |_|\n" +
                     "                                                    \n" +
-                    "  For a detailed explanation of all settings visit:         \n"+
-                    "      https://github.com/woutzah/ChatBrawl/wiki    \n"+
-                    "\n"+
-                    "  Need help? Join the Discord server: https://discord.gg/TvTUWvG"+
+                    "  For a detailed explanation of all settings visit:         \n" +
+                    "      https://github.com/woutzah/ChatBrawl/wiki    \n" +
+                    "\n" +
+                    "  Need help? Join the Discord server: https://discord.gg/TvTUWvG" +
                     " \n");
             config.options().copyHeader();
             config.addDefaults(resourceConfig);
@@ -63,12 +63,12 @@ public class ConfigManager{
             } catch (IOException e) {
                 ErrorHandler.error("Something went wrong when initializing the config files!");
             }
-            configMap.put(configType,config);
+            configMap.put(configType, config);
         });
 
     }
 
-    public YamlConfiguration getConfig(ConfigType type){
+    public YamlConfiguration getConfig(ConfigType type) {
         return configMap.get(type);
     }
 
