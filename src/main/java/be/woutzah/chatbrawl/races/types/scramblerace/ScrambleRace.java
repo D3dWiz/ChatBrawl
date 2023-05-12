@@ -87,10 +87,25 @@ public class ScrambleRace extends Race {
     }
 
     private String swapInNumbers(String word) {
-        return word.replace("A", "5").replace("a", "5")
-                .replace("E", "3").replace("a", "3")
+        return word
+                // English
                 .replace("O", "0").replace("o", "0")
-                .replace("I", "1").replace("i", "1");
+                .replace("I", "1").replace("i", "1")
+                .replace("Z", "2").replace("z", "2")
+                .replace("E", "3").replace("e", "3")
+                .replace("A", "5").replace("a", "5")
+                .replace("T", "7").replace("t", "7")
+
+                //Cyrillic
+                .replace("О", "0").replace("о", "0")
+                .replace("Е", "3").replace("е", "3")
+                .replace("З", "3").replace("з", "3")
+                .replace("Ч", "4").replace("ч", "4")
+                .replace("А", "5").replace("а", "5")
+                .replace("Ъ", "6").replace("ъ", "6")
+                .replace("Т", "7").replace("т", "7")
+                .replace("Г", "7").replace("г", "7")
+                .replace("В", "8").replace("в", "8");
     }
 
     @Override
