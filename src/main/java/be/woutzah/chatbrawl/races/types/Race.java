@@ -8,7 +8,6 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.Printer;
-import be.woutzah.chatbrawl.util.SchedulerUtil;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -83,14 +82,13 @@ public abstract class Race implements Raceable, Announceable, Listener {
         if (isBossBarEnabled()) stopBossBar();
         if (isActionBarEnabled()) stopActionBar();
         raceManager.setCurrentRunningRace(RaceType.NONE);
-        isActive = false;
+        setActive(false);
     }
 
     public void run(ChatBrawl plugin) {
-        isActive = true;
+        timeManager.startTimer();
         beforeRaceStart();
         if (isSoundEnabled()) playSound(beginSound);
-        timeManager.startTimer();
         this.raceTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -103,9 +101,8 @@ public abstract class Race implements Raceable, Announceable, Listener {
 
     @Override
     public void disable() {
-        SchedulerUtil.cancel(raceTask);
-        SchedulerUtil.cancel(bossBarTask);
-        SchedulerUtil.cancel(actionBarTask);
+        afterRaceEnd();
+        if(!raceTask.isCancelled()) raceTask.cancel();;
     }
 
     public boolean isEnabled() {

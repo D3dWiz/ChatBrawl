@@ -1,5 +1,8 @@
 package be.woutzah.chatbrawl.util;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,12 +18,12 @@ public class Printer {
 
     public static void sendMessage(String message, Player player) {
         if (message.isEmpty()) return;
-        player.sendMessage(parseColor(message));
+        player.sendMessage(Component.text(parseColor(message)));
     }
 
     public static void sendMessage(String message, CommandSender sender) {
         if (message.isEmpty()) return;
-        sender.sendMessage(parseColor(message));
+        sender.sendMessage(Component.text(parseColor(message)));
     }
 
 
@@ -28,14 +31,14 @@ public class Printer {
         if (textList.isEmpty()) return;
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
-        player.sendMessage(parseColor(sb.toString()));
+        player.sendMessage(Component.text(parseColor(sb.toString())));
     }
 
     public static void sendMessage(List<String> textList, CommandSender sender) {
         if (textList.isEmpty()) return;
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
-        sender.sendMessage(parseColor(sb.toString()));
+        sender.sendMessage(Component.text(parseColor(sb.toString())));
     }
 
     public static void printConsole(String text) {
@@ -45,14 +48,14 @@ public class Printer {
 
     public static void broadcast(String text) {
         if (text.isEmpty()) return;
-        Bukkit.broadcast(parseColor(text), "cb.default");
+        Bukkit.getServer().broadcast(Component.text(parseColor(text)), "cb.default");
     }
 
     public static void broadcast(List<String> textList) {
         if (textList.isEmpty()) return;
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
-        Bukkit.broadcast(parseColor(sb.toString()), "cb.default");
+        Bukkit.getServer().broadcast(Component.text(parseColor(parseColor(sb.toString()))), "cb.default");
     }
 
     public static String centerMessage(List<String> textList) {
@@ -95,21 +98,11 @@ public class Printer {
     }
 
     public static String parseColor(String text) {
-        return ChatColor.translateAlternateColorCodes('&', translateHexCodes(text)).replace("\\n", "\n");
-    }
-
-    public static String translateHexCodes(String textToTranslate) {
-        Matcher matcher = HEX_PATTERN.matcher(textToTranslate);
-        StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of("#" + matcher.group(1)).toString());
-        }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
-
+        return LegacyComponentSerializer.legacySection().serialize(Component.text(text));
     }
 
     public static String stripColors(String message) {
-        return ChatColor.stripColor(message);
+        return PlainTextComponentSerializer.plainText().serialize(Component.text(message));
     }
 
     public static String capitalize(String text) {

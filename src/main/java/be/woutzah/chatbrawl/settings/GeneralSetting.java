@@ -2,7 +2,7 @@ package be.woutzah.chatbrawl.settings;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 
-public enum GeneralSetting implements Setting {
+public enum GeneralSetting implements Setting{
     PLUGIN_PREFIX("plugin-prefix"),
     AUTO_CREATE_RACES("auto-create-races"),
     RACE_DELAY("race-delay"),

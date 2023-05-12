@@ -20,7 +20,6 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.Printer;
-import be.woutzah.chatbrawl.util.SchedulerUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -28,7 +27,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 
 public class RaceManager {
@@ -80,7 +78,7 @@ public class RaceManager {
         raceCreationTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!(plugin.getServer().getOnlinePlayers().size() >= minimumPlayers)) return;
+                if (plugin.getServer().getOnlinePlayers().size() < minimumPlayers) return;
                 Race race = null;
                 RaceType type = null;
                 boolean enabled = false;
@@ -107,7 +105,7 @@ public class RaceManager {
         int i = 0;
         List<RaceType> types = Arrays.stream(RaceType.values())
                 .filter(rt -> rt != RaceType.NONE)
-                .collect(Collectors.toList());
+                .toList();
         while (sum < index) {
             sum += raceMap.get(types.get(i++)).getChance();
         }
@@ -120,7 +118,7 @@ public class RaceManager {
     }
 
     public void disableAutoCreation() {
-        SchedulerUtil.cancel(raceCreationTask);
+        raceCreationTask.cancel();
         Race race = getCurrentRace();
         if (race != null) race.disable();
         isAutoCreating = false;

@@ -200,6 +200,7 @@ public class CraftRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomCraftEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
 }

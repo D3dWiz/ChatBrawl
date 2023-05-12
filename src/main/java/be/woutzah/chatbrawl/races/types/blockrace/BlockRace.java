@@ -158,7 +158,7 @@ public class BlockRace extends ContestantRace {
                         .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
                 bossBar.name(message);
                 bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(bossBar);
+                Bukkit.getServer().showBossBar(activeBossBar);
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }

@@ -189,6 +189,7 @@ public class FishRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomFishEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
 }

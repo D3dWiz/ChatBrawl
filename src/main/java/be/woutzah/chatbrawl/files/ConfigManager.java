@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 
 public class ConfigManager {
 
@@ -42,20 +43,23 @@ public class ConfigManager {
             if (inputStream == null) return;
             YamlConfiguration resourceConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream));
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            config.options().header("" +
-                    "   _____ _           _   ____                     _ \n" +
-                    "  / ____| |         | | |  _ \\                   | |\n" +
-                    " | |    | |__   __ _| |_| |_) |_ __ __ ___      _| |\n" +
-                    " | |    | '_ \\ / _` | __|  _ <| '__/ _` \\ \\ /\\ / / |\n" +
-                    " | |____| | | | (_| | |_| |_) | | | (_| |\\ V  V /| |\n" +
-                    "  \\_____|_| |_|\\__,_|\\__|____/|_|  \\__,_| \\_/\\_/ |_|\n" +
-                    "                                                    \n" +
-                    "  For a detailed explanation of all settings visit:         \n" +
-                    "      https://github.com/woutzah/ChatBrawl/wiki    \n" +
-                    "\n" +
-                    "  Need help? Join the Discord server: https://discord.gg/TvTUWvG" +
-                    " \n");
-            config.options().copyHeader();
+            final List<String> HEADER = Arrays.asList("""
+                       
+                       _____ _           _   ____                     _
+                      / ____| |         | | |  _ \\                   | |
+                     | |    | |__   __ _| |_| |_) |_ __ __ ___      _| |
+                     | |    | '_ \\ / _` | __|  _ <| '__/ _` \\ \\ /\\ / / |
+                     | |____| | | | (_| | |_| |_) | | | (_| |\\ V  V /| |
+                      \\_____|_| |_|\\__,_|\\__|____/|_|  \\__,_| \\_/\\_/ |_|
+                                                                      
+                      For a detailed explanation of all settings visit:
+                          https://github.com/woutzah/ChatBrawl/wiki    
+                      
+                        Need help? Join the Discord server: https://discord.gg/TvTUWvG
+                        
+                    """.split("\\n"));
+            config.options().setHeader(HEADER);
+            config.options().parseComments(true);
             config.addDefaults(resourceConfig);
             config.options().copyDefaults(true);
             try {

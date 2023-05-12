@@ -3,7 +3,7 @@ package be.woutzah.chatbrawl.settings.races;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.settings.Setting;
 
-public enum QuizRaceSetting implements Setting {
+public enum QuizRaceSetting  implements Setting {
 
     QUESTIONS("questions");
 

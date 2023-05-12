@@ -36,7 +36,7 @@ public class ChatBrawl extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("LangUtils") != null) {
             langUtilsIsEnabled = true;
         }
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             new PlaceholderManager(this).register();
         }
         enableMetrics();
@@ -47,7 +47,7 @@ public class ChatBrawl extends JavaPlugin {
         Metrics metrics = new Metrics(this, pluginId);
     }
 
-    public void init() {
+    public void init(){
         this.configManager = new ConfigManager(this);
         this.settingManager = new SettingManager(this);
         if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {

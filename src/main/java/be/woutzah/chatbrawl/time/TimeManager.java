@@ -9,8 +9,8 @@ import java.time.Instant;
 public class TimeManager {
 
     private ChatBrawl plugin;
-    private Instant startTime = Instant.now();
-    private Instant stopTime = Instant.now();
+    private Instant startTime;
+    private Instant stopTime;
 
     public TimeManager(ChatBrawl plugin) {
         this.plugin = plugin;

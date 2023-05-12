@@ -183,6 +183,7 @@ public class FoodRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomFoodEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
 }

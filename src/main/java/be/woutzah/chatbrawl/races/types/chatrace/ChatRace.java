@@ -59,6 +59,7 @@ public class ChatRace extends Race {
     public void beforeRaceStart() {
         initRandomWord();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
 

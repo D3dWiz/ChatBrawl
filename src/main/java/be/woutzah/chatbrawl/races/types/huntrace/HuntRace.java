@@ -185,6 +185,7 @@ public class HuntRace extends ContestantRace {
         super.beforeRaceStart();
         initRandomHuntEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
 }
