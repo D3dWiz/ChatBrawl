@@ -25,8 +25,8 @@ sound:
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
   # Language Placeholders: <prefix>, <amount>, <block>, <player>, <timeLeft>
-  bossbar: '&6&oBlock Race &7&l>> &fMine &b<amount> &fx &b<block>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oFish Race &7&l>> &fFish &b<amount> &fx &b<fish>'
+  bossbar: '&6&oFish Race &7&l>> &fFish &b<amount> &fx &b<fish>. &7Time left: &b<timeLeft>'
+  actionbar: '&6&oFish Race &7&l>> &fFish &b<amount> &fx &b<fish>. &7Time left: &b<timeLeft>'
   start:
     - ' \n'
     - '&7&l>&m=======&r&7{ &7(&e!&7) &6Fish Race &7(&e!&7) &7}&m======&r&7&l>\n'

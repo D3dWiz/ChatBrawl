@@ -10,9 +10,7 @@ mobs:
       - 2
 enable-firework: true
 enable-bossbar: true
-# Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
 bossbar-color: BLUE
-# Styles: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
 bossbar-style: PROGRESS
 enable-actionbar: true
 broadcast:
@@ -24,9 +22,8 @@ sound:
   begin-race: BLOCK_ANVIL_PLACE
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
-  # Language Placeholders: <prefix>, <amount>, <block>, <player>, <timeLeft>
-  bossbar: '&6&oBlock Race &7&l>> &fMine &b<amount> &fx &b<block>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oHunt Race &7&l>> &fKill &b<amount> &fx &b<mob>'
+  bossbar: '&6&oHunt Race &7&l>> &fKill &b<amount> &fx &b<mob>. &7Time left: &b<timeLeft>'
+  actionbar: '&6&oHunt Race &7&l>> &fKill &b<amount> &fx &b<mob> &7Time left: &b<timeLeft>'
   start:
     - ' \n'
     - '&7&l>&m========&r&7{ &7(&e!&7) &6Hunt Race &7(&e!&7) &7}&m=======&r&7&l>\n'

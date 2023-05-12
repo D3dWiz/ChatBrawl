@@ -170,37 +170,6 @@ public class ScrambleRace extends Race {
     }
 
     @Override
-    public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.SCRAMBLE).getDurationSeconds()))));
-        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.BOSSBAR_STYLE)));
-        this.activeBossBar = bossBar;
-        this.bossBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                int remainingTime = timeManager.getRemainingTime(RaceType.SCRAMBLE);
-                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.SCRAMBLE) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR))
-                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-                bossBar.name(message);
-                bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(bossBar);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
-    public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_ACTIONBAR)));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
     public String replacePlaceholders(String message) {
         return message.replace("<word>", scrambleWord.getScrambledWord());
     }

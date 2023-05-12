@@ -43,7 +43,7 @@ public class Printer {
 
     public static void printConsole(String text) {
         if (text.isEmpty()) return;
-        Bukkit.getConsoleSender().sendMessage(parseColor(text));
+        Bukkit.getConsoleSender().sendMessage(Component.text(parseColor(text)));
     }
 
     public static void broadcast(String text) {
@@ -92,13 +92,13 @@ public class Printer {
                 sb.append(" ");
                 compensated += spaceLength;
             }
-            resultSb.append(sb.toString()).append(line).append("\n");
+            resultSb.append(sb).append(line).append("\n");
         }
         return resultSb.toString();
     }
 
-    public static String parseColor(String text) {
-        return LegacyComponentSerializer.legacySection().serialize(Component.text(text));
+    public static String parseColor(String message) {
+        return LegacyComponentSerializer.legacySection().serialize(Component.text(message));
     }
 
     public static String stripColors(String message) {

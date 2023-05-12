@@ -122,17 +122,7 @@ public class CraftRace extends ContestantRace {
                     UUID uuid = player.getUniqueId();
                     contestantsManager.addScore(uuid, craftedItemStack.getAmount());
                     if (contestantsManager.hasWon(uuid, craftEntry.getAmount())) {
-                        //when correct
-                        afterRaceEnd();
-                        if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
-                        if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
-                        this.raceTask.cancel();
-                        rewardManager.executeRandomRewardSync(craftEntry.getRewardIds(), player);
-                        if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
-                            leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
-                        }
-                        Printer.sendMessage(getWinnerPersonal(), player);
-                        contestantsManager.removeOnlinePlayers();
+                        onWinning(player);
                     }
                 }
             }
@@ -145,7 +135,7 @@ public class CraftRace extends ContestantRace {
         List<String> messageList = settingManager.getStringList(RaceType.CRAFT, RaceSetting.LANGUAGE_WINNER)
                 .stream()
                 .map(this::replacePlaceholders)
-                .map(s -> s.replace("<displayname>", player.getDisplayName()))
+                .map(s -> s.replace("<displayname>", player.displayName().toString()))
                 .map(s -> s.replace("<player>", player.getName()))
                 .map(s -> s.replace("<time>", timeManager.getTimeString()))
                 .collect(Collectors.toList());
@@ -156,36 +146,6 @@ public class CraftRace extends ContestantRace {
         Printer.broadcast(messageList);
     }
 
-    @Override
-    public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.CRAFT, RaceSetting.LANGUAGE_BOSSBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.CRAFT).getDurationSeconds()))));
-        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.CRAFT, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.CRAFT, RaceSetting.BOSSBAR_STYLE)));
-        this.activeBossBar = bossBar;
-        this.bossBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                int remainingTime = timeManager.getRemainingTime(RaceType.CRAFT);
-                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.CRAFT) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.CRAFT, RaceSetting.LANGUAGE_BOSSBAR))
-                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-                bossBar.name(message);
-                bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(bossBar);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
-    public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.CRAFT, RaceSetting.LANGUAGE_ACTIONBAR)));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
 
     @Override
     public String replacePlaceholders(String message) {

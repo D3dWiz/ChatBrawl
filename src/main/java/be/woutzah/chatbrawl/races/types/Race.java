@@ -1,17 +1,25 @@
 package be.woutzah.chatbrawl.races.types;
 
 import be.woutzah.chatbrawl.ChatBrawl;
+import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
+import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.rewards.RewardManager;
+import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
+import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -58,13 +66,39 @@ public abstract class Race implements Raceable, Announceable, Listener {
                 .forEach(p -> p.playSound(p.getLocation(), sound, 1.0F, 8.0F));
     }
 
+    public void showBossBar() {
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(this.type).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(this.type, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(this.type, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.BLOCK) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(raceManager.getCurrentRunningRace(), RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(activeBossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
+    }
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_ACTIONBAR)));
+        this.actionBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getServer().sendActionBar(message);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
+    }
     @Override
     public void stopBossBar() {
         bossBarTask.cancel();
         Bukkit.getServer().hideBossBar(this.activeBossBar);
         this.activeBossBar = null;
     }
-
     @Override
     public void stopActionBar() {
         actionBarTask.cancel();

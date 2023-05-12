@@ -1,19 +1,19 @@
 package be.woutzah.chatbrawl.races.types.craftrace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.Material;
 
 import java.util.List;
 
-public class CraftEntry {
+public class CraftEntry extends RaceEntry {
 
     private final Material material;
     private final int amount;
-    private final List<Integer> rewardIds;
 
     public CraftEntry(Material material, int amount, List<Integer> rewardIds) {
+        super(rewardIds);
         this.material = material;
         this.amount = amount;
-        this.rewardIds = rewardIds;
     }
 
     public Material getMaterial() {
@@ -22,9 +22,5 @@ public class CraftEntry {
 
     public int getAmount() {
         return amount;
-    }
-
-    public List<Integer> getRewardIds() {
-        return rewardIds;
     }
 }

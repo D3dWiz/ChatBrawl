@@ -145,36 +145,6 @@ public class FishRace extends ContestantRace {
         Printer.broadcast(messageList);
     }
 
-    @Override
-    public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FISH, RaceSetting.LANGUAGE_BOSSBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.FISH).getDurationSeconds()))));
-        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.FISH, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.FISH, RaceSetting.BOSSBAR_STYLE)));
-        this.activeBossBar = bossBar;
-        this.bossBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                int remainingTime = timeManager.getRemainingTime(RaceType.FISH);
-                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.FISH) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FISH, RaceSetting.LANGUAGE_BOSSBAR))
-                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-                bossBar.name(message);
-                bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(bossBar);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
-    public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FISH, RaceSetting.LANGUAGE_ACTIONBAR)));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
 
     @Override
     public String replacePlaceholders(String message) {

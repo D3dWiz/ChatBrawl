@@ -57,6 +57,8 @@ public class ConfigManager {
                       
                         Need help? Join the Discord server: https://discord.gg/TvTUWvG
                         
+                     BossBar Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
+                     BossBar Overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
                     """.split("\\n"));
             config.options().setHeader(HEADER);
             config.options().parseComments(true);

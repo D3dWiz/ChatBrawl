@@ -126,37 +126,6 @@ public class QuizRace extends Race {
     }
 
     @Override
-    public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.QUIZ, RaceSetting.LANGUAGE_BOSSBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.QUIZ).getDurationSeconds()))));
-        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.QUIZ, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.QUIZ, RaceSetting.BOSSBAR_STYLE)));
-        this.activeBossBar = bossBar;
-        this.bossBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                int remainingTime = timeManager.getRemainingTime(RaceType.QUIZ);
-                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.QUIZ) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.QUIZ, RaceSetting.LANGUAGE_BOSSBAR))
-                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-                bossBar.name(message);
-                bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(bossBar);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
-    public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.QUIZ, RaceSetting.LANGUAGE_ACTIONBAR)));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
     public String replacePlaceholders(String message) {
         return message.replace("<question>", question.getQuestion());
     }

@@ -28,7 +28,7 @@ sound:
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
   # Language Placeholders: <prefix>, <amount>, <block>, <player>, <timeLeft>
-  bossbar: '&6&oBlock Race &7&l>> &fMine &b<amount> &fx &b<block>. &7Time left: &b<timeLeft>'
+  bossbar: '&6&oQuiz Race &7&l>> &fAnswer &b<question>. &7Time left: &b<timeLeft>'
   actionbar: '&6&oQuiz Race &7&l>> &fAnswer &b<question>'
   start:
     - ' \n'

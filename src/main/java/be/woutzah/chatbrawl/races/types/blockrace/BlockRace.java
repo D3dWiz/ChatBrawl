@@ -144,39 +144,6 @@ public class BlockRace extends ContestantRace {
     }
 
     @Override
-    public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_BOSSBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.BLOCK).getDurationSeconds()))));
-        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.BLOCK, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.BLOCK, RaceSetting.BOSSBAR_STYLE)));
-        this.activeBossBar = bossBar;
-        this.bossBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                int remainingTime = timeManager.getRemainingTime(RaceType.BLOCK);
-                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.BLOCK) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_BOSSBAR))
-                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-                bossBar.name(message);
-                bossBar.progress(remainingTimePercent);
-                Bukkit.getServer().showBossBar(activeBossBar);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-
-    @Override
-    public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.BLOCK, RaceSetting.LANGUAGE_ACTIONBAR)
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(timeManager.getRemainingTime(RaceType.BLOCK))))));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
-    @Override
     public String replacePlaceholders(String message) {
         return message
                 .replace("<block>", ChatBrawl.isLangUtilsIsEnabled() ?

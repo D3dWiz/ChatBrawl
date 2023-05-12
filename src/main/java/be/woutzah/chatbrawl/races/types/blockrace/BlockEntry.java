@@ -1,19 +1,19 @@
 package be.woutzah.chatbrawl.races.types.blockrace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.Material;
 
 import java.util.List;
 
-public class BlockEntry {
+public class BlockEntry extends RaceEntry {
 
     private final Material material;
     private final int amount;
-    private final List<Integer> rewardIds;
 
     public BlockEntry(Material material, int amount, List<Integer> rewardIds) {
+        super(rewardIds);
         this.material = material;
         this.amount = amount;
-        this.rewardIds = rewardIds;
     }
 
     public Material getMaterial() {
@@ -22,9 +22,5 @@ public class BlockEntry {
 
     public int getAmount() {
         return amount;
-    }
-
-    public List<Integer> getRewardIds() {
-        return rewardIds;
     }
 }
