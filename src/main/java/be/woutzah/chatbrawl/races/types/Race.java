@@ -24,7 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public abstract class Race implements Raceable, Announceable, Listener {
 
@@ -65,7 +67,28 @@ public abstract class Race implements Raceable, Announceable, Listener {
         Bukkit.getOnlinePlayers()
                 .forEach(p -> p.playSound(p.getLocation(), sound, 1.0F, 8.0F));
     }
-
+    public void announceStart(boolean center) {
+        List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
+                .stream()
+                .map(this::replacePlaceholders)
+                .collect(Collectors.toList());
+        if (center) {
+            Printer.broadcast(Printer.centerMessage(messageList));
+            return;
+        }
+        Printer.broadcast(messageList);
+    }
+    public void sendStart(Player player) {
+        List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
+                .stream()
+                .map(this::replacePlaceholders)
+                .collect(Collectors.toList());
+        if (isCenterMessages()) {
+            Printer.sendMessage(Printer.centerMessage(messageList), player);
+            return;
+        }
+        Printer.sendMessage(messageList, player);
+    }
     public void showBossBar() {
         Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
                 .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(this.type).getDurationSeconds()))));
@@ -104,11 +127,29 @@ public abstract class Race implements Raceable, Announceable, Listener {
         actionBarTask.cancel();
     }
 
-    @Override
     public void announceEnd() {
         Printer.broadcast(settingManager.getStringList(type, RaceSetting.LANGUAGE_ENDED));
     }
 
+    public void announceWinner(boolean center, Player player) {
+        List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_WINNER)
+                .stream()
+                .map(this::replacePlaceholders)
+                .map(s -> s.replace("<displayname>", player.displayName().toString()))
+                .map(s -> s.replace("<player>", player.getName()))
+                .map(s -> s.replace("<time>", timeManager.getTimeString()))
+                .collect(Collectors.toList());
+        if (center) {
+            Printer.broadcast(Printer.centerMessage(messageList));
+            return;
+        }
+        Printer.broadcast(messageList);
+    }
+    public void beforeRaceStart() {
+        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
+        if (isActionBarEnabled()) showActionBar();
+    }
     @Override
     public void afterRaceEnd() {
         timeManager.stopTimer();

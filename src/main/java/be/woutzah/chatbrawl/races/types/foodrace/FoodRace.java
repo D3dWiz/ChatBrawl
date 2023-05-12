@@ -67,32 +67,6 @@ public class FoodRace extends ContestantRace {
         foodEntry = foodEntryList.get(random.nextInt(foodEntryList.size()));
     }
 
-    @Override
-    public void announceStart(boolean center) {
-        List<String> messageList = settingManager.getStringList(RaceType.FOOD, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
-        Printer.broadcast(messageList);
-    }
-
-    @Override
-    public void sendStart(Player player) {
-        List<String> messageList = settingManager.getStringList(RaceType.FOOD, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (isCenterMessages()) {
-            Printer.sendMessage(Printer.centerMessage(messageList), player);
-            return;
-        }
-        Printer.sendMessage(messageList, player);
-    }
-
     @EventHandler
     public void onFoodConsume(PlayerItemConsumeEvent e) {
         //do checks
@@ -121,22 +95,6 @@ public class FoodRace extends ContestantRace {
                 contestantsManager.removeOnlinePlayers();
             }
         }
-    }
-
-    @Override
-    public void announceWinner(boolean center, Player player) {
-        List<String> messageList = settingManager.getStringList(RaceType.FOOD, RaceSetting.LANGUAGE_WINNER)
-                .stream()
-                .map(this::replacePlaceholders)
-                .map(s -> s.replace("<displayname>", player.getDisplayName()))
-                .map(s -> s.replace("<player>", player.getName()))
-                .map(s -> s.replace("<time>", timeManager.getTimeString()))
-                .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
-        Printer.broadcast(messageList);
     }
 
     @Override

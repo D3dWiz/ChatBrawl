@@ -144,51 +144,8 @@ public class ScrambleRace extends Race {
     }
 
     @Override
-    public void announceStart(boolean center) {
-        List<String> messageList = settingManager.getStringList(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
-        Printer.broadcast(messageList);
-    }
-
-    @Override
-    public void sendStart(Player player) {
-        List<String> messageList = settingManager.getStringList(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (isCenterMessages()) {
-            Printer.sendMessage(Printer.centerMessage(messageList), player);
-            return;
-        }
-        Printer.sendMessage(messageList, player);
-    }
-
-    @Override
     public String replacePlaceholders(String message) {
         return message.replace("<word>", scrambleWord.getScrambledWord());
-    }
-
-    @Override
-    public void announceWinner(boolean center, Player player) {
-        List<String> messageList = settingManager.getStringList(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_WINNER)
-                .stream()
-                .map(this::replacePlaceholders)
-                .map(s -> s.replace("<displayname>", player.getDisplayName()))
-                .map(s -> s.replace("<player>", player.getName()))
-                .map(s -> s.replace("<time>", timeManager.getTimeString()))
-                .map(s -> s.replace("<answer>", scrambleWord.getWord()))
-                .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
-        Printer.broadcast(messageList);
     }
 
     @Override

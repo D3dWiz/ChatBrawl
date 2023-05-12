@@ -156,7 +156,6 @@ public class FishRace extends ContestantRace {
 
     @Override
     public void beforeRaceStart() {
-        super.beforeRaceStart();
         initRandomFishEntry();
         if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
         if (isBossBarEnabled()) showBossBar();
