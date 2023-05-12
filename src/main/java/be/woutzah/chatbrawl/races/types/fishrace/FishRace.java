@@ -19,6 +19,7 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -146,7 +147,22 @@ public class FishRace extends ContestantRace {
 
     @Override
     public void showBossBar() {
-
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FISH, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.FISH).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.FISH, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.FISH, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(RaceType.FISH);
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.FISH) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FISH, RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(bossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
 
     @Override
@@ -163,8 +179,8 @@ public class FishRace extends ContestantRace {
     @Override
     public String replacePlaceholders(String message) {
         return message.replace("<fish>", ChatBrawl.isLangUtilsIsEnabled() ?
-                LanguageHelper.getItemName(new ItemStack(fishEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
-                : fishEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+                        LanguageHelper.getItemName(new ItemStack(fishEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
+                        : fishEntry.getMaterial().toString().toLowerCase().replace("_", " "))
                 .replace("<amount>", String.valueOf(fishEntry.getAmount()));
     }
 

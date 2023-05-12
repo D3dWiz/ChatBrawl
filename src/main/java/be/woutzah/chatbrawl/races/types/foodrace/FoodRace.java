@@ -19,6 +19,7 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -137,10 +138,27 @@ public class FoodRace extends ContestantRace {
         }
         Printer.broadcast(messageList);
     }
+
     @Override
     public void showBossBar() {
-
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FOOD, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.FOOD).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.FOOD, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.FOOD, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(RaceType.FOOD);
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.FOOD) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FOOD, RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(bossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
+
     @Override
     public void showActionBar() {
         Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.FOOD, RaceSetting.LANGUAGE_ACTIONBAR)));
@@ -155,8 +173,8 @@ public class FoodRace extends ContestantRace {
     @Override
     public String replacePlaceholders(String message) {
         return message.replace("<food>", ChatBrawl.isLangUtilsIsEnabled() ?
-                LanguageHelper.getItemName(new ItemStack(foodEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
-                : foodEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+                        LanguageHelper.getItemName(new ItemStack(foodEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
+                        : foodEntry.getMaterial().toString().toLowerCase().replace("_", " "))
                 .replace("<amount>", String.valueOf(foodEntry.getAmount()));
     }
 

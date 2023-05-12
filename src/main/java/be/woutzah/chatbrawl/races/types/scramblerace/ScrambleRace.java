@@ -16,6 +16,7 @@ import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -54,7 +55,7 @@ public class ScrambleRace extends Race {
 
     public void initRandomWord() {
         scrambleWord = scrambleWordList.get(random.nextInt(scrambleWordList.size()));
-        scrambleWord.setScrambledWord(scramble(scrambleWord.getWord(),scrambleWord.getDifficulty()));
+        scrambleWord.setScrambledWord(scramble(scrambleWord.getWord(), scrambleWord.getDifficulty()));
     }
 
     public String scramble(String word, int difficulty) {
@@ -95,6 +96,7 @@ public class ScrambleRace extends Race {
                 .replace("E", "3").replace("e", "3")
                 .replace("A", "5").replace("a", "5")
                 .replace("T", "7").replace("t", "7")
+                .replace("B", "8").replace("b", "8")
 
                 //Cyrillic
                 .replace("О", "0").replace("о", "0")
@@ -160,10 +162,30 @@ public class ScrambleRace extends Race {
                 .map(this::replacePlaceholders)
                 .collect(Collectors.toList());
         if (isCenterMessages()) {
-            Printer.sendMessage(Printer.centerMessage(messageList),player);
+            Printer.sendMessage(Printer.centerMessage(messageList), player);
             return;
         }
-        Printer.sendMessage(messageList,player);
+        Printer.sendMessage(messageList, player);
+    }
+
+    @Override
+    public void showBossBar() {
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.SCRAMBLE).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(RaceType.SCRAMBLE);
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.SCRAMBLE) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(bossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
 
     @Override
@@ -200,16 +222,10 @@ public class ScrambleRace extends Race {
     }
 
     @Override
-    public void showBossBar() {
-        String message = replacePlaceholders(settingManager.getString(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_BOSSBAR));
-
-    }
-
-    @Override
     public void announceEnd() {
         List<String> lines = settingManager.getStringList(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_ENDED)
                 .stream()
-                .map(line -> line.replace("<answer>",scrambleWord.getWord()))
+                .map(line -> line.replace("<answer>", scrambleWord.getWord()))
                 .collect(Collectors.toList());
         Printer.broadcast(lines);
     }

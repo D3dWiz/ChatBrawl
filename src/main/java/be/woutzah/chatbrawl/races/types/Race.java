@@ -104,6 +104,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
     @Override
     public void disable() {
         SchedulerUtil.cancel(raceTask);
+        SchedulerUtil.cancel(bossBarTask);
         SchedulerUtil.cancel(actionBarTask);
     }
 
@@ -151,8 +152,13 @@ public abstract class Race implements Raceable, Announceable, Listener {
         return chance;
     }
 
-    public int getDuration() { return duration; }
-    public int getDurationSeconds() { return settingManager.getInt(type, RaceSetting.DURATION); }
+    public int getDuration() {
+        return duration;
+    }
+
+    public int getDurationSeconds() {
+        return settingManager.getInt(type, RaceSetting.DURATION);
+    }
 
     protected boolean isActive() {
         return isActive;

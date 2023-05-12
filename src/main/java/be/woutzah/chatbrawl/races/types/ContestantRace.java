@@ -16,7 +16,7 @@ public abstract class ContestantRace extends Race {
     public ContestantRace(RaceType type, RaceManager raceManager, SettingManager settingManager,
                           RewardManager rewardManager, TimeManager timeManager,
                           ContestantsManager contestantsManager, LeaderboardManager leaderboardManager) {
-        super(type, raceManager, settingManager, rewardManager, timeManager,leaderboardManager);
+        super(type, raceManager, settingManager, rewardManager, timeManager, leaderboardManager);
         this.contestantsManager = contestantsManager;
     }
 

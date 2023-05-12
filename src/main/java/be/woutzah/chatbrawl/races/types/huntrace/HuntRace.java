@@ -19,6 +19,7 @@ import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import com.meowj.langutils.lang.LanguageHelper;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -38,135 +39,152 @@ import java.util.stream.Collectors;
 public class HuntRace extends ContestantRace {
 
 
-	private final List<HuntEntry> huntEntryList;
-	private HuntEntry huntEntry;
+    private final List<HuntEntry> huntEntryList;
+    private HuntEntry huntEntry;
 
-	public HuntRace(RaceManager raceManager, SettingManager settingManager,
-					RewardManager rewardManager, TimeManager timeManager,
-					ContestantsManager contestantsManager, LeaderboardManager leaderboardManager) {
-		super(RaceType.HUNT, raceManager, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager);
-		this.huntEntryList = new ArrayList<>();
-		initHuntEntryList();
-	}
+    public HuntRace(RaceManager raceManager, SettingManager settingManager,
+                    RewardManager rewardManager, TimeManager timeManager,
+                    ContestantsManager contestantsManager, LeaderboardManager leaderboardManager) {
+        super(RaceType.HUNT, raceManager, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager);
+        this.huntEntryList = new ArrayList<>();
+        initHuntEntryList();
+    }
 
-	private void initHuntEntryList() {
-		settingManager.getConfigSection(HuntRaceSetting.MOBS).getKeys(false).forEach(entry -> {
-			EntityType entityType = null;
-			try {
-				entityType = EntityType.valueOf(settingManager.getString(ConfigType.HUNTRACE, "mobs." + entry + ".mob").toUpperCase());
-			} catch (Exception exception) {
-				ErrorHandler.error("huntrace: huntentry " + entry + " has an invalid entitytype!");
-			}
-			int amount = settingManager.getInt(ConfigType.HUNTRACE, "mobs." + entry + ".amount");
-			List<Integer> rewardIds = settingManager.getIntegerList(ConfigType.HUNTRACE, "mobs." + entry + ".rewards");
-			huntEntryList.add(new HuntEntry(entityType, amount, rewardIds));
-		});
-	}
+    private void initHuntEntryList() {
+        settingManager.getConfigSection(HuntRaceSetting.MOBS).getKeys(false).forEach(entry -> {
+            EntityType entityType = null;
+            try {
+                entityType = EntityType.valueOf(settingManager.getString(ConfigType.HUNTRACE, "mobs." + entry + ".mob").toUpperCase());
+            } catch (Exception exception) {
+                ErrorHandler.error("huntrace: huntentry " + entry + " has an invalid entitytype!");
+            }
+            int amount = settingManager.getInt(ConfigType.HUNTRACE, "mobs." + entry + ".amount");
+            List<Integer> rewardIds = settingManager.getIntegerList(ConfigType.HUNTRACE, "mobs." + entry + ".rewards");
+            huntEntryList.add(new HuntEntry(entityType, amount, rewardIds));
+        });
+    }
 
-	public void initRandomHuntEntry() {
-		huntEntry = huntEntryList.get(random.nextInt(huntEntryList.size()));
-	}
+    public void initRandomHuntEntry() {
+        huntEntry = huntEntryList.get(random.nextInt(huntEntryList.size()));
+    }
 
-	@Override
-	public void announceStart(boolean center) {
-		List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_START)
-				.stream()
-				.map(this::replacePlaceholders)
-				.collect(Collectors.toList());
-		if (center) {
-			Printer.broadcast(Printer.centerMessage(messageList));
-			return;
-		}
-		Printer.broadcast(messageList);
-	}
+    @Override
+    public void announceStart(boolean center) {
+        List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_START)
+                .stream()
+                .map(this::replacePlaceholders)
+                .collect(Collectors.toList());
+        if (center) {
+            Printer.broadcast(Printer.centerMessage(messageList));
+            return;
+        }
+        Printer.broadcast(messageList);
+    }
 
-	@Override
-	public void sendStart(Player player) {
-		List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_START)
-				.stream()
-				.map(this::replacePlaceholders)
-				.collect(Collectors.toList());
-		if (isCenterMessages()) {
-			Printer.sendMessage(Printer.centerMessage(messageList), player);
-			return;
-		}
-		Printer.sendMessage(messageList, player);
-	}
+    @Override
+    public void sendStart(Player player) {
+        List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_START)
+                .stream()
+                .map(this::replacePlaceholders)
+                .collect(Collectors.toList());
+        if (isCenterMessages()) {
+            Printer.sendMessage(Printer.centerMessage(messageList), player);
+            return;
+        }
+        Printer.sendMessage(messageList, player);
+    }
 
-	@EventHandler
-	public void checkMobsKilled(EntityDeathEvent e) {
-		//do checks
-		if (!isActive()) return;
-		Player player = e.getEntity().getKiller();
-		if (player == null) return;
-		if (!raceManager.isCreativeAllowed()) {
-			if (player.getGameMode() == GameMode.CREATIVE) return;
-		}
-		World world = player.getWorld();
-		if (!raceManager.isWorldAllowed(world.getName())) return;
-		EntityType killedEntityType = e.getEntity().getType();
-		if (killedEntityType.equals(huntEntry.getEntityType())) {
-			UUID uuid = player.getUniqueId();
-			contestantsManager.addScore(uuid);
-			if (contestantsManager.hasWon(uuid, huntEntry.getAmount())) {
-				//when correct
-				afterRaceEnd();
-				if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
-				if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
-				this.raceTask.cancel();
-				rewardManager.executeRandomRewardSync(huntEntry.getRewardIds(), player);
-				if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
-					leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
-				}
-				Printer.sendMessage(getWinnerPersonal(), player);
-				contestantsManager.removeOnlinePlayers();
-			}
-		}
-	}
+    @EventHandler
+    public void checkMobsKilled(EntityDeathEvent e) {
+        //do checks
+        if (!isActive()) return;
+        Player player = e.getEntity().getKiller();
+        if (player == null) return;
+        if (!raceManager.isCreativeAllowed()) {
+            if (player.getGameMode() == GameMode.CREATIVE) return;
+        }
+        World world = player.getWorld();
+        if (!raceManager.isWorldAllowed(world.getName())) return;
+        EntityType killedEntityType = e.getEntity().getType();
+        if (killedEntityType.equals(huntEntry.getEntityType())) {
+            UUID uuid = player.getUniqueId();
+            contestantsManager.addScore(uuid);
+            if (contestantsManager.hasWon(uuid, huntEntry.getAmount())) {
+                //when correct
+                afterRaceEnd();
+                if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
+                if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
+                this.raceTask.cancel();
+                rewardManager.executeRandomRewardSync(huntEntry.getRewardIds(), player);
+                if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
+                    leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
+                }
+                Printer.sendMessage(getWinnerPersonal(), player);
+                contestantsManager.removeOnlinePlayers();
+            }
+        }
+    }
 
-	@Override
-	public void announceWinner(boolean center, Player player) {
-		List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_WINNER)
-				.stream()
-				.map(this::replacePlaceholders)
-				.map(s -> s.replace("<displayname>", player.getDisplayName()))
-				.map(s -> s.replace("<player>", player.getName()))
-				.map(s -> s.replace("<time>", timeManager.getTimeString()))
-				.collect(Collectors.toList());
-		if (center) {
-			Printer.broadcast(Printer.centerMessage(messageList));
-			return;
-		}
-		Printer.broadcast(messageList);
-	}
-	@Override
-	public void showBossBar() {
+    @Override
+    public void announceWinner(boolean center, Player player) {
+        List<String> messageList = settingManager.getStringList(RaceType.HUNT, RaceSetting.LANGUAGE_WINNER)
+                .stream()
+                .map(this::replacePlaceholders)
+                .map(s -> s.replace("<displayname>", player.getDisplayName()))
+                .map(s -> s.replace("<player>", player.getName()))
+                .map(s -> s.replace("<time>", timeManager.getTimeString()))
+                .collect(Collectors.toList());
+        if (center) {
+            Printer.broadcast(Printer.centerMessage(messageList));
+            return;
+        }
+        Printer.broadcast(messageList);
+    }
 
-	}
-	@Override
-	public void showActionBar() {
-		Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_ACTIONBAR)));
-		this.actionBarTask = new BukkitRunnable() {
-			@Override
-			public void run() {
-				Bukkit.getServer().sendActionBar(message);
-			}
-		}.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-	}
+    @Override
+    public void showBossBar() {
+        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_BOSSBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(RaceType.HUNT).getDurationSeconds()))));
+        final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(RaceType.HUNT, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(RaceType.HUNT, RaceSetting.BOSSBAR_STYLE)));
+        this.activeBossBar = bossBar;
+        this.bossBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(RaceType.HUNT);
+                float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.HUNT) / getDurationSeconds());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_BOSSBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                bossBar.name(message);
+                bossBar.progress(remainingTimePercent);
+                Bukkit.getServer().showBossBar(bossBar);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
+    }
 
-	@Override
-	public String replacePlaceholders(String message) {
-		return message.replace("<mob>", ChatBrawl.isLangUtilsIsEnabled() ?
-				LanguageHelper.getEntityName(huntEntry.getEntityType(), settingManager.getString(LanguageSetting.LANG))
-				: huntEntry.getEntityType().toString().toLowerCase().replace("_", " "))
-				.replace("<amount>", String.valueOf(huntEntry.getAmount()));
-	}
+    @Override
+    public void showActionBar() {
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(RaceType.HUNT, RaceSetting.LANGUAGE_ACTIONBAR)));
+        this.actionBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getServer().sendActionBar(message);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
+    }
 
-	@Override
-	public void beforeRaceStart() {
-		super.beforeRaceStart();
-		initRandomHuntEntry();
-		if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-		if (isActionBarEnabled()) showActionBar();
-	}
+    @Override
+    public String replacePlaceholders(String message) {
+        return message.replace("<mob>", ChatBrawl.isLangUtilsIsEnabled() ?
+                        LanguageHelper.getEntityName(huntEntry.getEntityType(), settingManager.getString(LanguageSetting.LANG))
+                        : huntEntry.getEntityType().toString().toLowerCase().replace("_", " "))
+                .replace("<amount>", String.valueOf(huntEntry.getAmount()));
+    }
+
+    @Override
+    public void beforeRaceStart() {
+        super.beforeRaceStart();
+        initRandomHuntEntry();
+        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isActionBarEnabled()) showActionBar();
+    }
 }
