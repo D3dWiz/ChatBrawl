@@ -11,9 +11,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.CraftRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -56,14 +54,9 @@ public class CraftRace extends ContestantRace {
 
     @EventHandler(ignoreCancelled = true)
     public void checkCraftedItems(CraftItemEvent e) {
-        //do checks
         if (!isActive()) return;
         Player player = (Player) e.getWhoClicked();
-        if (!raceManager.isCreativeAllowed()) {
-            if (player.getGameMode() == GameMode.CREATIVE) return;
-        }
-        World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.getName())) return;
+        raceChecks(player);
         if (!(e.getWhoClicked().getInventory().firstEmpty() == -1)) {
             if (e.getSlotType() == InventoryType.SlotType.RESULT) {
                 ItemStack craftedItemStack;

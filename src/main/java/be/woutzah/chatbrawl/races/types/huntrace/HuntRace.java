@@ -3,19 +3,14 @@ package be.woutzah.chatbrawl.races.types.huntrace;
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
-import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.ContestantRace;
-import be.woutzah.chatbrawl.races.types.RaceEntry;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
-import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.HuntRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import be.woutzah.chatbrawl.util.FireWorkUtil;
-import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -75,16 +70,7 @@ public class HuntRace extends ContestantRace {
             UUID uuid = player.getUniqueId();
             contestantsManager.addScore(uuid);
             if (contestantsManager.hasWon(uuid, huntEntry.getAmount())) {
-                //when correct
-                afterRaceEnd();
-                if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
-                if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
-                this.raceTask.cancel();
-                rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
-                if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
-                    leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
-                }
-                Printer.sendMessage(getWinnerPersonal(), player);
+                onWinning(player);
                 contestantsManager.removeOnlinePlayers();
             }
         }

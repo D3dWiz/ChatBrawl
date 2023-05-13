@@ -2,17 +2,22 @@ package be.woutzah.chatbrawl.races.types;
 
 import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
+import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.rewards.RewardManager;
+import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
+import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,12 +30,12 @@ import java.util.stream.Collectors;
 
 public abstract class Race implements Raceable, Announceable, Listener {
 
+    public final int duration;
     protected final Random random;
     protected final Sound endSound;
     protected final RaceType type;
     private final Sound beginSound;
     private final int chance;
-    public final int duration;
     protected LeaderboardManager leaderboardManager;
     protected RaceManager raceManager;
     protected SettingManager settingManager;
@@ -81,10 +86,10 @@ public abstract class Race implements Raceable, Announceable, Listener {
                 .map(this::replacePlaceholders)
                 .collect(Collectors.toList());
         if (isCenterMessages()) {
-            Printer.sendMessage(Printer.centerMessage(messageList), player);
+            Printer.sendParsedMessage(Printer.centerMessage(messageList), player);
             return;
         }
-        Printer.sendMessage(messageList, player);
+        Printer.sendParsedMessage(messageList, player);
     }
 
     public void showBossBar() {
@@ -242,6 +247,26 @@ public abstract class Race implements Raceable, Announceable, Listener {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void raceChecks(Player player) {
+        if (!raceManager.isCreativeAllowed()) {
+            if (player.getGameMode() == GameMode.CREATIVE) return;
+        }
+        World world = player.getWorld();
+        if (!raceManager.isWorldAllowed(world.getName())) return;
+    }
+
+    public void onWinning(Player player) {
+        afterRaceEnd();
+        if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
+        if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
+        this.raceTask.cancel();
+        rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
+        if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
+            leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
+        }
+        Printer.sendParsedMessage(getWinnerPersonal(), player);
     }
 
 }

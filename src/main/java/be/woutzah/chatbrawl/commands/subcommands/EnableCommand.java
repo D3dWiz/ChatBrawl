@@ -23,12 +23,12 @@ public class EnableCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (raceManager.isAutoCreating()) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.ALREADY_ENABLED), sender);
             return;
         }
         raceManager.autoCreateRaces();
-        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 settingManager.getString(LanguageSetting.ENABLED), sender);
     }
 }

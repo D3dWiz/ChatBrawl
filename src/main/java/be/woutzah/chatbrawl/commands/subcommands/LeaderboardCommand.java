@@ -33,12 +33,12 @@ public class LeaderboardCommand extends SubCommand {
     public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
         if (leaderboardManager == null) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     "&cMySQL has not been configured!", player);
             return;
         }
         if (args.length <= 0) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.LEADERBOARD_TYPE), player);
             return;
         }
@@ -52,17 +52,17 @@ public class LeaderboardCommand extends SubCommand {
                             .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
                             .replace("<wins>", String.valueOf(user.getWins()))));
                     settingManager.getStringList(LeaderboardSetting.TOTAL_FOOTER).forEach(sb::append);
-                    Printer.sendMessage(sb.toString(), player);
+                    Printer.sendParsedMessage(sb.toString(), player);
                 });
                 return;
             case "RACE":
                 if (args.length < 2) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_RACE), player);
                     return;
                 }
                 if (args.length < 3) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_SUBTYPE), player);
                     return;
                 }
@@ -70,7 +70,7 @@ public class LeaderboardCommand extends SubCommand {
                 try {
                     raceType = RaceType.valueOf(args[1].toUpperCase());
                 } catch (Exception ex) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_VALID_RACE), player);
                     return;
                 }
@@ -86,7 +86,7 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
                                     .replace("<wins>", String.valueOf(user.getWins()))));
                             settingManager.getStringList(LeaderboardSetting.TOTALRACE_FOOTER).forEach(sb::append);
-                            Printer.sendMessage(sb.toString(), player);
+                            Printer.sendParsedMessage(sb.toString(), player);
                         });
                         return;
                     case "TIME":
@@ -99,24 +99,24 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
                                     .replace("<time>", timeManager.formatTime(user.getSeconds()))));
                             settingManager.getStringList(LeaderboardSetting.FASTESTRACE_FOOTER).forEach(sb::append);
-                            Printer.sendMessage(sb.toString(), player);
+                            Printer.sendParsedMessage(sb.toString(), player);
                         });
                         return;
                 }
             case "USER":
                 if (args.length < 2) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_USER), player);
                     return;
                 }
                 if (args.length < 3) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_SUBTYPE), player);
                     return;
                 }
                 OfflinePlayer offlinePlayer;
                 if (!Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
-                    Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                             settingManager.getString(LanguageSetting.LEADERBOARD_NOT_PLAYED_BEFORE), player);
                     return;
                 }
@@ -131,7 +131,7 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<race>", Printer.capitalize(race.toString().toLowerCase()) + " Race")
                                     .replace("<wins>", String.valueOf(raceWinsMap.get(race)))));
                             settingManager.getStringList(LeaderboardSetting.TOTALUSER_FOOTER).forEach(sb::append);
-                            Printer.sendMessage(sb.toString(), player);
+                            Printer.sendParsedMessage(sb.toString(), player);
                         });
                         return;
                     case "TIME":
@@ -143,16 +143,16 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<race>", Printer.capitalize(race.toString().toLowerCase()) + " Race")
                                     .replace("<time>", timeManager.formatTime(fastestTimesMap.get(race)))));
                             settingManager.getStringList(LeaderboardSetting.FASTESTUSER_FOOTER).forEach(sb::append);
-                            Printer.sendMessage(sb.toString(), player);
+                            Printer.sendParsedMessage(sb.toString(), player);
                         });
                         return;
                     default:
-                        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                                 settingManager.getString(LanguageSetting.LEADERBOARD_VALID_SUBTYPE), player);
                         return;
                 }
             default:
-                Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                         settingManager.getString(LanguageSetting.LEADERBOARD_VALID_TYPE), player);
         }
     }

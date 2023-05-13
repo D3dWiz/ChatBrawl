@@ -28,7 +28,7 @@ public class ReloadCommand extends SubCommand {
         raceManager.disableAutoCreation();
         HandlerList.unregisterAll(plugin);
         plugin.init();
-        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 "&eChatBrawl V" + plugin.getDescription().getVersion() + " &fhas been &areloaded&f!", sender);
     }
 }

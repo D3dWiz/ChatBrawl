@@ -6,8 +6,8 @@ import java.util.List;
 
 public class ScrambleWord extends RaceEntry {
     private final String word;
-    private String scrambledWord;
     private final int difficulty;
+    private String scrambledWord;
 
     public ScrambleWord(String word, int difficulty, List<Integer> rewardIds) {
         super(rewardIds);
@@ -19,12 +19,12 @@ public class ScrambleWord extends RaceEntry {
         return word;
     }
 
-    public void setScrambledWord(String scrambledWord) {
-        this.scrambledWord = scrambledWord;
-    }
-
     public String getScrambledWord() {
         return scrambledWord;
+    }
+
+    public void setScrambledWord(String scrambledWord) {
+        this.scrambledWord = scrambledWord;
     }
 
     public int getDifficulty() {

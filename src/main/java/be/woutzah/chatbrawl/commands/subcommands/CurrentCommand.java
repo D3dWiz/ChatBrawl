@@ -28,7 +28,7 @@ public class CurrentCommand extends SubCommand {
         Player player = (Player) sender;
         Race race = raceManager.getCurrentRace();
         if (race == null) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.NO_RACE_RUNNING), player);
             return;
         }

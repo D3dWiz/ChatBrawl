@@ -7,8 +7,6 @@ import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class StartCommand extends SubCommand {
         raceManager.disableAutoCreation();
         if (raceManager.getCurrentRunningRace() == null) raceManager.setCurrentRunningRace(RaceType.NONE);
         if (raceManager.getCurrentRunningRace() != RaceType.NONE) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.RACE_STILL_RUNNING), sender);
             return;
         }
@@ -37,7 +35,7 @@ public class StartCommand extends SubCommand {
         raceType = RaceType.valueOf(raceTypeString.toUpperCase());
         raceManager.startRace(raceType);
 
-        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 settingManager.getString(LanguageSetting.STARTED_RACE)
                         .replace("<race>", raceType.toString().toLowerCase() + " race"), sender);
     }

@@ -6,8 +6,6 @@ import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
-import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,23 +52,23 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(Component.text(Printer.parseColor("&cmake sure to type a subcommand!")));
+            Printer.sendParsedMessage("&cmake sure to type a subcommand!", sender);
             return true;
         }
 
         SubCommand target = findSubCommand(args[0]);
 
         if (target == null) {
-            Printer.sendMessage(settingManager.getString(LanguageSetting.SUBCOMMAND_NOT_EXIST), sender);
+            Printer.sendParsedMessage(settingManager.getString(LanguageSetting.SUBCOMMAND_NOT_EXIST), sender);
             return true;
         }
         if (!target.isCanConsoleUse() && !(sender instanceof Player)) {
-            sender.sendMessage(Component.text(Printer.parseColor("&cOnly players can use this subcommand!")));
+            Printer.sendParsedMessage("&cOnly players can use this subcommand!", sender);
             return true;
         }
         if (!target.getPermission().equalsIgnoreCase("none")) {
             if (!sender.hasPermission(target.getPermission())) {
-                Printer.sendMessage(settingManager.getString(LanguageSetting.NO_PERMISSION), sender);
+                Printer.sendParsedMessage(settingManager.getString(LanguageSetting.NO_PERMISSION), sender);
                 return true;
             }
         }
@@ -78,7 +76,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         try {
             target.execute(sender, remapArgs(args));
         } catch (Exception e) {
-            sender.sendMessage(Component.text(Printer.parseColor("&cAn error has occurred while performing the command!")));
+            Printer.sendParsedMessage("&cAn error has occurred while performing the command!", sender);
             e.printStackTrace();
         }
         return true;

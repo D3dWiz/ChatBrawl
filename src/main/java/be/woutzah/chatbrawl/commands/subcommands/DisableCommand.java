@@ -24,12 +24,12 @@ public class DisableCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!raceManager.isAutoCreating()) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.ALREADY_DISABLED), sender);
             return;
         }
         raceManager.disableAutoCreation();
-        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 settingManager.getString(LanguageSetting.DISABLED), sender);
     }
 }

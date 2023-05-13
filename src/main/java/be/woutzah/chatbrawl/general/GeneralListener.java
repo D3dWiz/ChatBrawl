@@ -31,7 +31,7 @@ public class GeneralListener implements Listener {
         Race race = raceManager.getCurrentRace();
         Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (race == null) {
-                Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                         settingManager.getString(LanguageSetting.NO_RACE_RUNNING), player);
                 return;
             }

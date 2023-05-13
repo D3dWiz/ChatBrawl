@@ -27,6 +27,11 @@ public class ChatBrawl extends JavaPlugin {
     private ContestantsManager contestantsManager;
     private DatabaseManager databaseManager;
     private LeaderboardManager leaderboardManager;
+
+    public static ChatBrawl getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -95,9 +100,5 @@ public class ChatBrawl extends JavaPlugin {
 
     public LeaderboardManager getLeaderboardManager() {
         return leaderboardManager;
-    }
-
-    public static ChatBrawl getInstance() {
-        return instance;
     }
 }

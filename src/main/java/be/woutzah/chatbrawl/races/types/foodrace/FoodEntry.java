@@ -8,6 +8,7 @@ import java.util.List;
 public class FoodEntry extends RaceEntry {
     private final Material material;
     private final int amount;
+
     public FoodEntry(Material material, int amount, List<Integer> rewardIds) {
         super(rewardIds);
         this.material = material;

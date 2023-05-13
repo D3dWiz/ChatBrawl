@@ -5,9 +5,12 @@ import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.settings.RewardSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -58,9 +61,9 @@ public class RewardManager {
         });
         Printer.broadcast(selectedReward.getBroadcast()
                 .replace("<player>", player.getName()));
-        player.sendTitle(Printer.parseColor(selectedReward.getTitle()),
-                Printer.parseColor(selectedReward.getSubtitle()),
-                10, 70, 20);
+        Title title = Title.title(Component.text(Printer.parseColor(selectedReward.getTitle())),
+                Component.text(Printer.parseColor(selectedReward.getSubtitle())), Title.Times.times(Duration.ofMillis(10), Duration.ofMillis(70), Duration.ofMillis(20)));
+        player.showTitle(title);
     }
 
     public void executeRandomRewardSync(List<Integer> selectedRewardIds, Player player) {

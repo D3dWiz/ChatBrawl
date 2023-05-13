@@ -25,19 +25,19 @@ public class StopCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (raceManager.getCurrentRunningRace() == RaceType.NONE) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.NO_RACE_RUNNING), sender);
             return;
         }
         Race race = raceManager.getCurrentRace();
         if (race == null) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.NO_RACE_RUNNING), sender);
             return;
         }
         race.disable();
         raceManager.setCurrentRunningRace(RaceType.NONE);
-        Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+        Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 settingManager.getString(LanguageSetting.STOPPED_RACE)
                         .replace("<race>", race.getType().toString().toLowerCase() + " race"), sender);
     }

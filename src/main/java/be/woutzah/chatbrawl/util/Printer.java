@@ -8,32 +8,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Printer {
-    public static final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     private final static int CENTER_PX = 154;
 
-    public static void sendMessage(String message, Player player) {
-        if (message.isEmpty()) return;
-        player.sendMessage(Component.text(parseColor(message)));
-    }
-
-    public static void sendMessage(String message, CommandSender sender) {
-        if (message.isEmpty()) return;
-        sender.sendMessage(Component.text(parseColor(message)));
-    }
-
-
-    public static void sendMessage(List<String> textList, Player player) {
+    public static void sendParsedMessage(List<String> textList, Player player) {
         if (textList.isEmpty()) return;
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
         player.sendMessage(Component.text(parseColor(sb.toString())));
     }
 
-    public static void sendMessage(List<String> textList, CommandSender sender) {
+    public static void sendParsedMessage(List<String> textList, CommandSender sender) {
         if (textList.isEmpty()) return;
         StringBuilder sb = new StringBuilder();
         textList.forEach(entry -> sb.append(parseColor(entry)));
@@ -99,6 +87,41 @@ public class Printer {
     public static String parseColor(String message) {
         Component parsedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
         return LegacyComponentSerializer.legacySection().serialize(parsedMessage);
+    }
+
+    public static void sendParsedMessage(String message, Player player) {
+        if (message.isEmpty()) return;
+        String[] split = message.split("\n");
+        for (String line : split) {
+            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
+            player.sendMessage(serialized);
+        }
+    }
+
+    public static void sendParsedMessage(String message, CommandSender sender) {
+        if (message.isEmpty()) return;
+        String[] split = message.split("\n");
+        for (String line : split) {
+            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
+            sender.sendMessage(serialized);
+        }
+    }
+
+    public static void sendParsedBroadcast(String message) {
+        String[] split = message.split("\n");
+        List<Component> components = new ArrayList<>();
+        for (String line : split) {
+            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
+            components.add(serialized);
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (Component component : components) {
+                player.sendMessage(component);
+            }
+        }
     }
 
     public static String stripColors(String message) {
