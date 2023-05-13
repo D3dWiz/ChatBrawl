@@ -2,9 +2,9 @@ name: ChatBrawl
 version: 2.0
 main: be.woutzah.chatbrawl.ChatBrawl
 api-version: 1.19
-authors: [Woutzah]
+authors: [ Woutzah ]
 description: A fun chat competition plugin.
-softdepend: [PlaceholderAPI]
+softdepend: [ PlaceholderAPI ]
 
 permissions:
   cb.admin:
@@ -17,14 +17,14 @@ permissions:
       cb.stop: true
       cb.start: true
       cb.leaderboard: true
-  cb.default: {}
-  cb.current: {}
-  cb.disable: {}
-  cb.enable: {}
-  cb.reload: {}
-  cb.stop: {}
-  cb.start: {}
-  cb.leaderboard: {}
+  cb.default: { }
+  cb.current: { }
+  cb.disable: { }
+  cb.enable: { }
+  cb.reload: { }
+  cb.stop: { }
+  cb.start: { }
+  cb.leaderboard: { }
 
 commands:
   chatbrawl:

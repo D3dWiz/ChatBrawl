@@ -1,16 +1,12 @@
 package be.woutzah.chatbrawl.races.types;
 
 import be.woutzah.chatbrawl.ChatBrawl;
-import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
-import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.rewards.RewardManager;
-import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
-import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -19,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -67,6 +62,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         Bukkit.getOnlinePlayers()
                 .forEach(p -> p.playSound(p.getLocation(), sound, 1.0F, 8.0F));
     }
+
     public void announceStart(boolean center) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
                 .stream()
@@ -78,6 +74,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         }
         Printer.broadcast(messageList);
     }
+
     public void sendStart(Player player) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
                 .stream()
@@ -89,6 +86,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         }
         Printer.sendMessage(messageList, player);
     }
+
     public void showBossBar() {
         Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
                 .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(this.type).getDurationSeconds()))));
@@ -107,8 +105,11 @@ public abstract class Race implements Raceable, Announceable, Listener {
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
+
     public void showActionBar() {
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_ACTIONBAR)));
+        int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
+        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_ACTIONBAR))
+                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
         this.actionBarTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -116,12 +117,14 @@ public abstract class Race implements Raceable, Announceable, Listener {
             }
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
+
     @Override
     public void stopBossBar() {
         bossBarTask.cancel();
         Bukkit.getServer().hideBossBar(this.activeBossBar);
         this.activeBossBar = null;
     }
+
     @Override
     public void stopActionBar() {
         actionBarTask.cancel();
@@ -145,11 +148,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         }
         Printer.broadcast(messageList);
     }
-    public void beforeRaceStart() {
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
-    }
+
     @Override
     public void afterRaceEnd() {
         timeManager.stopTimer();
@@ -161,23 +160,28 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     public void run(ChatBrawl plugin) {
-        timeManager.startTimer();
-        beforeRaceStart();
-        if (isSoundEnabled()) playSound(beginSound);
-        this.raceTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                afterRaceEnd();
-                if (isAnnounceEndEnabled()) announceEnd();
-            }
-        }.runTaskLater(plugin, duration);
-        Bukkit.getScheduler().isCurrentlyRunning(raceTask.getTaskId());
+        try {
+            timeManager.startTimer();
+            beforeRaceStart();
+            if (isSoundEnabled()) playSound(beginSound);
+            this.raceTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    afterRaceEnd();
+                    if (isAnnounceEndEnabled()) announceEnd();
+                }
+            }.runTaskLater(plugin, duration);
+            Bukkit.getScheduler().isCurrentlyRunning(raceTask.getTaskId());
+        } catch (Exception e) {
+            raceManager.setCurrentRunningRace(RaceType.NONE);
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void disable() {
         afterRaceEnd();
-        if(!raceTask.isCancelled()) raceTask.cancel();;
+        if (!raceTask.isCancelled()) raceTask.cancel();
     }
 
     public boolean isEnabled() {

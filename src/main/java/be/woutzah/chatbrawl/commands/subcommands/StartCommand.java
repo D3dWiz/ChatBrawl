@@ -7,6 +7,8 @@ import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -23,29 +25,18 @@ public class StartCommand extends SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        raceManager.disableAutoCreation();
+        if (raceManager.getCurrentRunningRace() == null) raceManager.setCurrentRunningRace(RaceType.NONE);
         if (raceManager.getCurrentRunningRace() != RaceType.NONE) {
             Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.RACE_STILL_RUNNING), sender);
             return;
         }
-        String raceTypeString = null;
-        try {
-            raceTypeString = args[0];
-        } catch (Exception ex) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
-                    settingManager.getString(LanguageSetting.START_RACE_USAGE), sender);
-            return;
-        }
-        RaceType raceType = null;
-        try {
-            raceType = RaceType.valueOf(raceTypeString.toUpperCase());
-        } catch (Exception ex) {
-            Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
-                    settingManager.getString(LanguageSetting.RACETYPE_NOT_EXIST), sender);
-            return;
-        }
-        raceManager.disableAutoCreation();
+        String raceTypeString = args[0];
+        RaceType raceType = RaceType.NONE;
+        raceType = RaceType.valueOf(raceTypeString.toUpperCase());
         raceManager.startRace(raceType);
+
         Printer.sendMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                 settingManager.getString(LanguageSetting.STARTED_RACE)
                         .replace("<race>", raceType.toString().toLowerCase() + " race"), sender);

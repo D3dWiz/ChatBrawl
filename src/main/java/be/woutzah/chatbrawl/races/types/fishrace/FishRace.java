@@ -1,6 +1,5 @@
 package be.woutzah.chatbrawl.races.types.fishrace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
@@ -10,7 +9,6 @@ import be.woutzah.chatbrawl.races.types.ContestantRace;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
-import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.FishRaceSetting;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
@@ -18,11 +16,6 @@ import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import com.meowj.langutils.lang.LanguageHelper;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -30,8 +23,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,9 +139,7 @@ public class FishRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<fish>", ChatBrawl.isLangUtilsIsEnabled() ?
-                        LanguageHelper.getItemName(new ItemStack(fishEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
-                        : fishEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+        return message.replace("<fish>", fishEntry.getMaterial().toString().replace("_", " "))
                 .replace("<amount>", String.valueOf(fishEntry.getAmount()));
     }
 

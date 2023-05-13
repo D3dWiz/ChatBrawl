@@ -1,28 +1,16 @@
 package be.woutzah.chatbrawl.races.types.craftrace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
-import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.ContestantRace;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
-import be.woutzah.chatbrawl.settings.GeneralSetting;
-import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.CraftRaceSetting;
-import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import be.woutzah.chatbrawl.util.FireWorkUtil;
-import be.woutzah.chatbrawl.util.Printer;
-import com.meowj.langutils.lang.LanguageHelper;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,10 +19,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CraftRace extends ContestantRace {
 
@@ -106,9 +92,7 @@ public class CraftRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<item>", ChatBrawl.isLangUtilsIsEnabled() ?
-                        LanguageHelper.getItemName(new ItemStack(craftEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
-                        : craftEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+        return message.replace("<item>", craftEntry.getMaterial().toString().toLowerCase().replace("_", " "))
                 .replace("<amount>", String.valueOf(craftEntry.getAmount()));
     }
 

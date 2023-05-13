@@ -43,15 +43,15 @@ public class LeaderboardManager {
         return CompletableFuture.supplyAsync(() -> leaderboardUserDAO.getMostTotalWinsForRace(raceType));
     }
 
-    public CompletableFuture<List<TimeUser>> getFastestTimeForRace(RaceType raceType){
+    public CompletableFuture<List<TimeUser>> getFastestTimeForRace(RaceType raceType) {
         return CompletableFuture.supplyAsync(() -> leaderboardUserDAO.getFastestTimeForRace(raceType));
     }
 
-    public CompletableFuture<Map<RaceType,Integer>> getMostWinsForUser(UUID uuid){
+    public CompletableFuture<Map<RaceType, Integer>> getMostWinsForUser(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> leaderboardUserDAO.getMostWinsForUser(uuid));
     }
 
-    public CompletableFuture<Map<RaceType,Integer>> getFastestTimeForUser(UUID uuid){
+    public CompletableFuture<Map<RaceType, Integer>> getFastestTimeForUser(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> leaderboardUserDAO.getFastestTimeForUser(uuid));
     }
 }

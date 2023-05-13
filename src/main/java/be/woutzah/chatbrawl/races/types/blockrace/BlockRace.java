@@ -1,28 +1,21 @@
 package be.woutzah.chatbrawl.races.types.blockrace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.ContestantRace;
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
-import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.BlockRaceSetting;
-import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import com.meowj.langutils.lang.LanguageHelper;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -30,13 +23,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BlockRace extends ContestantRace {
 
@@ -90,7 +80,7 @@ public class BlockRace extends ContestantRace {
                 if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
                 if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
                 this.raceTask.cancel();
-                rewardManager.executeRandomRewardSync(blockEntry.getRewardIds(), player);
+                rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
                 if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
                     leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
                 }
@@ -98,15 +88,12 @@ public class BlockRace extends ContestantRace {
                 contestantsManager.removeOnlinePlayers();
             }
         }
-
     }
 
     @Override
     public String replacePlaceholders(String message) {
         return message
-                .replace("<block>", ChatBrawl.isLangUtilsIsEnabled() ?
-                        LanguageHelper.getItemName(new ItemStack(blockEntry.getMaterial()), settingManager.getString(LanguageSetting.LANG))
-                        : blockEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+                .replace("<block>", blockEntry.getMaterial().toString().toLowerCase().replace("_", " "))
                 .replace("<amount>", String.valueOf(blockEntry.getAmount()))
                 .replace("<prefix>", settingManager.getString(GeneralSetting.PLUGIN_PREFIX));
     }

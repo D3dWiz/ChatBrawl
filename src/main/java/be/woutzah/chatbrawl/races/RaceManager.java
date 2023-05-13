@@ -71,7 +71,6 @@ public class RaceManager {
         if (autoCreationEnabled) autoCreateRaces();
     }
 
-
     public void autoCreateRaces() {
         Printer.printConsole(settingManager.getString(LanguageSetting.STARTED_CREATING));
         isAutoCreating = true;
@@ -93,8 +92,8 @@ public class RaceManager {
                     cancel();
                     return;
                 }
-                race.run(plugin);
                 currentRunningRace = race.getType();
+                race.run(plugin);
             }
         }.runTaskTimer(plugin, 200, raceDelay);
     }
@@ -125,8 +124,13 @@ public class RaceManager {
     }
 
     public void startRace(RaceType raceType) {
-        raceMap.get(raceType).run(plugin);
-        currentRunningRace = raceType;
+        try {
+            currentRunningRace = raceType;
+            raceMap.get(raceType).run(plugin);
+        } catch (Exception e) {
+            currentRunningRace = RaceType.NONE;
+            e.printStackTrace();
+        }
     }
 
     public boolean isCreativeAllowed() {

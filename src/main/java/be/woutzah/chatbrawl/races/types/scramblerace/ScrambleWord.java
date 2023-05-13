@@ -1,17 +1,18 @@
 package be.woutzah.chatbrawl.races.types.scramblerace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
+
 import java.util.List;
 
-public class ScrambleWord {
+public class ScrambleWord extends RaceEntry {
     private final String word;
     private String scrambledWord;
     private final int difficulty;
-    private final List<Integer> rewardIds;
 
     public ScrambleWord(String word, int difficulty, List<Integer> rewardIds) {
+        super(rewardIds);
         this.word = word;
         this.difficulty = difficulty;
-        this.rewardIds = rewardIds;
     }
 
     public String getWord() {
@@ -28,9 +29,5 @@ public class ScrambleWord {
 
     public int getDifficulty() {
         return difficulty;
-    }
-
-    public List<Integer> getRewardIds() {
-        return rewardIds;
     }
 }

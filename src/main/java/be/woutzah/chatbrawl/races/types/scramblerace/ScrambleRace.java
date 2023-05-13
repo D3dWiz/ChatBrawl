@@ -1,11 +1,11 @@
 package be.woutzah.chatbrawl.races.types.scramblerace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.Race;
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
@@ -16,15 +16,10 @@ import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,7 +131,7 @@ public class ScrambleRace extends Race {
         if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
         if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
         this.raceTask.cancel();
-        rewardManager.executeRandomRewardSync(scrambleWord.getRewardIds(), player);
+        rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
         if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
             leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
         }

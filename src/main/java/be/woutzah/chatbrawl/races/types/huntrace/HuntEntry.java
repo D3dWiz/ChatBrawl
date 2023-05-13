@@ -1,19 +1,19 @@
 package be.woutzah.chatbrawl.races.types.huntrace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
-public class HuntEntry {
+public class HuntEntry extends RaceEntry {
 
     private final EntityType entityType;
     private final int amount;
-    private final List<Integer> rewardIds;
 
     public HuntEntry(EntityType entityType, int amount, List<Integer> rewardIds) {
+        super(rewardIds);
         this.entityType = entityType;
         this.amount = amount;
-        this.rewardIds = rewardIds;
     }
 
     public EntityType getEntityType() {
@@ -24,7 +24,4 @@ public class HuntEntry {
         return amount;
     }
 
-    public List<Integer> getRewardIds() {
-        return rewardIds;
-    }
 }

@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Printer {
@@ -98,11 +97,12 @@ public class Printer {
     }
 
     public static String parseColor(String message) {
-        return LegacyComponentSerializer.legacySection().serialize(Component.text(message));
+        Component parsedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+        return LegacyComponentSerializer.legacySection().serialize(parsedMessage);
     }
 
     public static String stripColors(String message) {
-        return PlainTextComponentSerializer.plainText().serialize(Component.text(message));
+        return PlainTextComponentSerializer.plainText().deserialize(message).toString();
     }
 
     public static String capitalize(String text) {

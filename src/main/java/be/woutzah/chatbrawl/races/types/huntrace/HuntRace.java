@@ -1,40 +1,31 @@
 package be.woutzah.chatbrawl.races.types.huntrace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.ContestantRace;
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
-import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.HuntRaceSetting;
-import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import com.meowj.langutils.lang.LanguageHelper;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class HuntRace extends ContestantRace {
 
@@ -89,7 +80,7 @@ public class HuntRace extends ContestantRace {
                 if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
                 if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
                 this.raceTask.cancel();
-                rewardManager.executeRandomRewardSync(huntEntry.getRewardIds(), player);
+                rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
                 if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
                     leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
                 }
@@ -102,9 +93,7 @@ public class HuntRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<mob>", ChatBrawl.isLangUtilsIsEnabled() ?
-                        LanguageHelper.getEntityName(huntEntry.getEntityType(), settingManager.getString(LanguageSetting.LANG))
-                        : huntEntry.getEntityType().toString().toLowerCase().replace("_", " "))
+        return message.replace("<mob>", huntEntry.getEntityType().toString().toLowerCase().replace("_", " "))
                 .replace("<amount>", String.valueOf(huntEntry.getAmount()));
     }
 

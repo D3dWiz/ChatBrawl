@@ -9,6 +9,7 @@ public abstract class RaceEntry {
     public RaceEntry(List<Integer> rewardIds) {
         RaceEntry.rewardIds = rewardIds;
     }
+
     public static List<Integer> getRewardIds() {
         return rewardIds;
     }

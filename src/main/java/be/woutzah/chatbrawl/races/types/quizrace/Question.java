@@ -1,17 +1,18 @@
 package be.woutzah.chatbrawl.races.types.quizrace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
+
 import java.util.List;
 
-public class Question {
+public class Question extends RaceEntry {
 
     private final String question;
     private final List<String> answers;
-    private final List<Integer> rewardIds;
 
     public Question(String question, List<String> answers, List<Integer> rewardIds) {
+        super(rewardIds);
         this.question = question;
         this.answers = answers;
-        this.rewardIds = rewardIds;
     }
 
     public String getQuestion() {
@@ -20,10 +21,6 @@ public class Question {
 
     public List<String> getAnswers() {
         return answers;
-    }
-
-    public List<Integer> getRewardIds() {
-        return rewardIds;
     }
 }
 

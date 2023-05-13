@@ -1,11 +1,11 @@
 package be.woutzah.chatbrawl.races.types.quizrace;
 
-import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.Race;
+import be.woutzah.chatbrawl.races.types.RaceEntry;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
@@ -15,16 +15,11 @@ import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,35 +50,9 @@ public class QuizRace extends Race {
         question = questionList.get(random.nextInt(questionList.size()));
     }
 
-    @Override
-    public void announceStart(boolean center) {
-        List<String> messageList = settingManager.getStringList(RaceType.QUIZ, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
-        Printer.broadcast(messageList);
-    }
-
-    @Override
-    public void sendStart(Player player) {
-        List<String> messageList = settingManager.getStringList(RaceType.QUIZ, RaceSetting.LANGUAGE_START)
-                .stream()
-                .map(this::replacePlaceholders)
-                .collect(Collectors.toList());
-        if (isCenterMessages()) {
-            Printer.sendMessage(Printer.centerMessage(messageList), player);
-            return;
-        }
-        Printer.sendMessage(messageList, player);
-    }
-
 
     @EventHandler
-    public void checkAnswerInChat(AsyncPlayerChatEvent e) {
+    public void checkAnswerInChat(AsyncChatEvent e) {
         //do checks
         if (!isActive()) return;
         Player player = e.getPlayer();
@@ -92,7 +61,7 @@ public class QuizRace extends Race {
         }
         World world = player.getWorld();
         if (!raceManager.isWorldAllowed(world.getName())) return;
-        String message = Printer.stripColors(e.getMessage());
+        String message = Printer.stripColors(e.originalMessage().toString());
         if (raceManager.startsWithForbiddenCommand(message)) return;
         if (question.getAnswers().stream().anyMatch(a -> a.equalsIgnoreCase(message))) {
             //when correct
@@ -100,7 +69,7 @@ public class QuizRace extends Race {
             if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
             if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
             this.raceTask.cancel();
-            rewardManager.executeRandomRewardSync(question.getRewardIds(), player);
+            rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
             if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
                 leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
             }
@@ -113,7 +82,7 @@ public class QuizRace extends Race {
         List<String> messageList = settingManager.getStringList(RaceType.QUIZ, RaceSetting.LANGUAGE_WINNER)
                 .stream()
                 .map(this::replacePlaceholders)
-                .map(s -> s.replace("<displayname>", player.getDisplayName()))
+                .map(s -> s.replace("<displayname>", player.displayName().toString()))
                 .map(s -> s.replace("<player>", player.getName()))
                 .map(s -> s.replace("<time>", timeManager.getTimeString()))
                 .map(s -> s.replace("<answer>", question.getAnswers().get(0)))

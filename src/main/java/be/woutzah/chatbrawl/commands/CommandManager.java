@@ -6,6 +6,7 @@ import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.settings.LanguageSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
@@ -37,8 +35,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
 
     public void setup() {
-        plugin.getCommand(parentCommandName).setExecutor(this);
-        plugin.getCommand(parentCommandName).setTabCompleter(this);
+        Objects.requireNonNull(plugin.getCommand(parentCommandName)).setExecutor(this);
+        Objects.requireNonNull(plugin.getCommand(parentCommandName)).setTabCompleter(this);
         this.subCommandsList.add(new CurrentCommand(plugin));
         this.subCommandsList.add(new DisableCommand(plugin));
         this.subCommandsList.add(new EnableCommand(plugin));
@@ -56,7 +54,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "make sure to type a subcommand!");
+            sender.sendMessage(Component.text(Printer.parseColor("&cmake sure to type a subcommand!")));
             return true;
         }
 
@@ -67,7 +65,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return true;
         }
         if (!target.isCanConsoleUse() && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use this subcommand!");
+            sender.sendMessage(Component.text(Printer.parseColor("&cOnly players can use this subcommand!")));
             return true;
         }
         if (!target.getPermission().equalsIgnoreCase("none")) {
@@ -80,7 +78,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         try {
             target.execute(sender, remapArgs(args));
         } catch (Exception e) {
-            sender.sendMessage(ChatColor.RED + "An error has occurred while performing the command!");
+            sender.sendMessage(Component.text(Printer.parseColor("&cAn error has occurred while performing the command!")));
             e.printStackTrace();
         }
         return true;
@@ -168,7 +166,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     }
                 }
                 case 3 -> {
-                    if (args[1].toLowerCase().equals("race")) {
+                    if (args[1].equalsIgnoreCase("race")) {
                         if (sender.hasPermission("cb.leaderboard") ||
                                 sender.hasPermission("cb.admin")) {
                             Arrays.stream(RaceType.values()).filter(r -> r != RaceType.NONE)
@@ -182,7 +180,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 case 4 -> {
-                    if (args[0].toLowerCase().equals("leaderboard")) {
+                    if (args[0].equalsIgnoreCase("leaderboard")) {
                         if (sender.hasPermission("cb.leaderboard") ||
                                 sender.hasPermission("cb.admin")) {
                             tempList.add("time");

@@ -47,11 +47,6 @@
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.NyaaCat</groupId>
-            <artifactId>LanguageUtils</artifactId>
-            <version>1.16-cb0d08e12c-1</version>
-        </dependency>
     </dependencies>
 
     <build>

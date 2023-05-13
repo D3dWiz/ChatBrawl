@@ -1,22 +1,19 @@
 package be.woutzah.chatbrawl.races.types.chatrace;
 
+import be.woutzah.chatbrawl.races.types.RaceEntry;
+
 import java.util.List;
 
-public class WordToGuess {
+public class WordToGuess extends RaceEntry {
 
     private final String word;
-    private final List<Integer> rewardIds;
 
     public WordToGuess(String word, List<Integer> rewardIds) {
+        super(rewardIds);
         this.word = word;
-        this.rewardIds = rewardIds;
     }
 
     public String getWord() {
         return word;
-    }
-
-    public List<Integer> getRewardIds() {
-        return rewardIds;
     }
 }

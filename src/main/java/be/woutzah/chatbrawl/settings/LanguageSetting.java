@@ -2,7 +2,7 @@ package be.woutzah.chatbrawl.settings;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 
-public enum LanguageSetting implements Setting{
+public enum LanguageSetting implements Setting {
     LANG("lang"),
     HELPMENU("general.helpmenu"),
     STARTED_CREATING("general.started-creating"),
