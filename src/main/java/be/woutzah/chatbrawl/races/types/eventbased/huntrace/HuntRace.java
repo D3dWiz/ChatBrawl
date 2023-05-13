@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.huntrace;
+package be.woutzah.chatbrawl.races.types.eventbased.huntrace;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
@@ -85,10 +85,7 @@ public class HuntRace extends ContestantRace {
 
     @Override
     public void beforeRaceStart() {
-        super.beforeRaceStart();
         initRandomHuntEntry();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
+        super.beforeRaceStart();
     }
 }

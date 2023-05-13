@@ -1,10 +1,10 @@
-package be.woutzah.chatbrawl.races.types.scramblerace;
+package be.woutzah.chatbrawl.races.types.chatbased.scramblerace;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
-import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
+import be.woutzah.chatbrawl.races.types.chatbased.ChatRace;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.RaceSetting;
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ScrambleRace extends Race {
+public class ScrambleRace extends ChatRace {
 
     private final List<ScrambleWord> scrambleWordList;
     private ScrambleWord scrambleWord;
@@ -42,6 +42,7 @@ public class ScrambleRace extends Race {
         });
     }
 
+    @Override
     public void initRandomWord() {
         scrambleWord = scrambleWordList.get(random.nextInt(scrambleWordList.size()));
         scrambleWord.setScrambledWord(scramble(scrambleWord.getWord(), scrambleWord.getDifficulty()));
@@ -97,14 +98,6 @@ public class ScrambleRace extends Race {
                 .replace("Т", "7").replace("т", "7")
                 .replace("Г", "7").replace("г", "7")
                 .replace("В", "8").replace("в", "8");
-    }
-
-    @Override
-    public void beforeRaceStart() {
-        initRandomWord();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
     }
 
     @EventHandler

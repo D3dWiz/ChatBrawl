@@ -3,15 +3,15 @@ package be.woutzah.chatbrawl.settings.races;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.settings.Setting;
 
-public enum ChatRaceSetting implements Setting {
+public enum GuessRaceSetting implements Setting {
     WORDS("words");
 
     private final String path;
     private final ConfigType configType;
 
-    ChatRaceSetting(String path) {
+    GuessRaceSetting(String path) {
         this.path = path;
-        this.configType = ConfigType.CHATRACE;
+        this.configType = ConfigType.GUESSRACE;
     }
 
 

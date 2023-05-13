@@ -91,20 +91,24 @@ public class Printer {
 
     public static void sendParsedMessage(String message, Player player) {
         if (message.isEmpty()) return;
+        Component deserialized;
+        Component serialized;
         String[] split = message.split("\n");
         for (String line : split) {
-            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
-            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
+            deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+            serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
             player.sendMessage(serialized);
         }
     }
 
     public static void sendParsedMessage(String message, CommandSender sender) {
         if (message.isEmpty()) return;
+        Component deserialized;
+        Component serialized;
         String[] split = message.split("\n");
         for (String line : split) {
-            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
-            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
+            deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
+            serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
             sender.sendMessage(serialized);
         }
     }

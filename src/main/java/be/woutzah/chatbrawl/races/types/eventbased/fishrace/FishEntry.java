@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.fishrace;
+package be.woutzah.chatbrawl.races.types.eventbased.fishrace;
 
 import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.Material;

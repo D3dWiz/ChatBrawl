@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.quizrace;
+package be.woutzah.chatbrawl.races.types.chatbased.quizrace;
 
 import be.woutzah.chatbrawl.races.types.RaceEntry;
 

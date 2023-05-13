@@ -68,6 +68,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
                 .forEach(p -> p.playSound(p.getLocation(), sound, 1.0F, 8.0F));
     }
 
+    @Override
     public void announceStart(boolean center) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
                 .stream()
@@ -80,6 +81,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         Printer.broadcast(messageList);
     }
 
+    @Override
     public void sendStart(Player player) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
                 .stream()
@@ -92,6 +94,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         Printer.sendParsedMessage(messageList, player);
     }
 
+    @Override
     public void showBossBar() {
         Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
                 .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(this.type).getDurationSeconds()))));
@@ -111,23 +114,25 @@ public abstract class Race implements Raceable, Announceable, Listener {
         }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
 
-    public void showActionBar() {
-        int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
-        Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_ACTIONBAR))
-                .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
-        this.actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getServer().sendActionBar(message);
-            }
-        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
-    }
-
     @Override
     public void stopBossBar() {
         bossBarTask.cancel();
+        assert this.activeBossBar != null;
         Bukkit.getServer().hideBossBar(this.activeBossBar);
         this.activeBossBar = null;
+    }
+
+    @Override
+    public void showActionBar() {
+        this.actionBarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
+                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(getType(), RaceSetting.LANGUAGE_ACTIONBAR))
+                        .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
+                Bukkit.getServer().sendActionBar(message);
+            }
+        }.runTaskTimer(ChatBrawl.getInstance(), 0, 20);
     }
 
     @Override
@@ -135,10 +140,12 @@ public abstract class Race implements Raceable, Announceable, Listener {
         actionBarTask.cancel();
     }
 
+    @Override
     public void announceEnd() {
         Printer.broadcast(settingManager.getStringList(type, RaceSetting.LANGUAGE_ENDED));
     }
 
+    @Override
     public void announceWinner(boolean center, Player player) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_WINNER)
                 .stream()
@@ -152,6 +159,13 @@ public abstract class Race implements Raceable, Announceable, Listener {
             return;
         }
         Printer.broadcast(messageList);
+    }
+
+    @Override
+    public void beforeRaceStart() {
+        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
+        if (isActionBarEnabled()) showActionBar();
     }
 
     @Override

@@ -4,7 +4,7 @@ public enum ConfigType {
     MAIN("config.yml"),
     LANGUAGE("language.yml"),
     REWARDS("rewards/rewards.yml"),
-    CHATRACE("races/chatrace.yml"),
+    GUESSRACE("races/guessrace.yml"),
     BLOCKRACE("races/blockrace.yml"),
     FISHRACE("races/fishrace.yml"),
     FOODRACE("races/foodrace.yml"),

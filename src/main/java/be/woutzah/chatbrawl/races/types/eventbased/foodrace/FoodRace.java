@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.foodrace;
+package be.woutzah.chatbrawl.races.types.eventbased.foodrace;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
@@ -70,10 +70,7 @@ public class FoodRace extends ContestantRace {
 
     @Override
     public void beforeRaceStart() {
-        super.beforeRaceStart();
         initRandomFoodEntry();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
+        super.beforeRaceStart();
     }
 }

@@ -36,6 +36,6 @@ public class GeneralListener implements Listener {
                 return;
             }
             race.sendStart(player);
-        }, 100);
+        }, 250);
     }
 }

@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.huntrace;
+package be.woutzah.chatbrawl.races.types.eventbased.huntrace;
 
 import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.entity.EntityType;

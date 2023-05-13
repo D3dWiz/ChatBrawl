@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.fishrace;
+package be.woutzah.chatbrawl.races.types.eventbased.fishrace;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
@@ -76,8 +76,6 @@ public class FishRace extends ContestantRace {
     @Override
     public void beforeRaceStart() {
         initRandomFishEntry();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
+        super.beforeRaceStart();
     }
 }

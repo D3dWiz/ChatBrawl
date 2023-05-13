@@ -1,10 +1,10 @@
-package be.woutzah.chatbrawl.races.types.quizrace;
+package be.woutzah.chatbrawl.races.types.chatbased.quizrace;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
-import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
+import be.woutzah.chatbrawl.races.types.chatbased.ChatRace;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.QuizRaceSetting;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QuizRace extends Race {
+public class QuizRace extends ChatRace {
     private final List<Question> questionList;
     private Question question;
 
@@ -40,6 +40,7 @@ public class QuizRace extends Race {
         });
     }
 
+    @Override
     public void initRandomWord() {
         question = questionList.get(random.nextInt(questionList.size()));
     }
@@ -60,14 +61,6 @@ public class QuizRace extends Race {
     @Override
     public String replacePlaceholders(String message) {
         return message.replace("<question>", question.getQuestion());
-    }
-
-    @Override
-    public void beforeRaceStart() {
-        initRandomWord();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
     }
 
     @Override

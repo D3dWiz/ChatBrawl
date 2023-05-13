@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.blockrace;
+package be.woutzah.chatbrawl.races.types.eventbased.blockrace;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
@@ -80,8 +80,6 @@ public class BlockRace extends ContestantRace {
     @Override
     public void beforeRaceStart() {
         initRandomBlockEntry();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
+        super.beforeRaceStart();
     }
 }

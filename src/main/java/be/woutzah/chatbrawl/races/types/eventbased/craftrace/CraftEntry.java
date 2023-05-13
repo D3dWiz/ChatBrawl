@@ -1,15 +1,16 @@
-package be.woutzah.chatbrawl.races.types.foodrace;
+package be.woutzah.chatbrawl.races.types.eventbased.craftrace;
 
 import be.woutzah.chatbrawl.races.types.RaceEntry;
 import org.bukkit.Material;
 
 import java.util.List;
 
-public class FoodEntry extends RaceEntry {
+public class CraftEntry extends RaceEntry {
+
     private final Material material;
     private final int amount;
 
-    public FoodEntry(Material material, int amount, List<Integer> rewardIds) {
+    public CraftEntry(Material material, int amount, List<Integer> rewardIds) {
         super(rewardIds);
         this.material = material;
         this.amount = amount;

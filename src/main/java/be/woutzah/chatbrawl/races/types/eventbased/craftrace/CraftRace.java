@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.craftrace;
+package be.woutzah.chatbrawl.races.types.eventbased.craftrace;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
@@ -92,8 +92,6 @@ public class CraftRace extends ContestantRace {
     @Override
     public void beforeRaceStart() {
         initRandomCraftEntry();
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
+        super.beforeRaceStart();
     }
 }
