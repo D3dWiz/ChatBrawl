@@ -5,9 +5,9 @@ import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
-import be.woutzah.chatbrawl.races.types.chatbased.guessrace.GuessRace;
 import be.woutzah.chatbrawl.races.types.chatbased.quizrace.QuizRace;
 import be.woutzah.chatbrawl.races.types.chatbased.scramblerace.ScrambleRace;
+import be.woutzah.chatbrawl.races.types.chatbased.typerace.TypeRace;
 import be.woutzah.chatbrawl.races.types.eventbased.blockrace.BlockRace;
 import be.woutzah.chatbrawl.races.types.eventbased.craftrace.CraftRace;
 import be.woutzah.chatbrawl.races.types.eventbased.fishrace.FishRace;
@@ -23,10 +23,7 @@ import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 public class RaceManager {
@@ -44,7 +41,7 @@ public class RaceManager {
     private int minimumPlayers;
     private Random random;
     private BukkitTask raceCreationTask;
-    private RaceType currentRunningRace;
+    private RaceType currentRunningRace = RaceType.NONE;
     private boolean isAutoCreating;
 
     public RaceManager(ChatBrawl plugin) {
@@ -54,15 +51,16 @@ public class RaceManager {
         this.timeManager = plugin.getTimeManager();
         this.contestantsManager = plugin.getContestantsManager();
         this.leaderboardManager = plugin.getLeaderboardManager();
-        this.raceMap = new EnumMap<>(RaceType.class);
-        raceMap.put(RaceType.GUESS, new GuessRace(this, settingManager, rewardManager, timeManager, leaderboardManager));
-        raceMap.put(RaceType.BLOCK, new BlockRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager));
-        raceMap.put(RaceType.FISH, new FishRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager));
-        raceMap.put(RaceType.FOOD, new FoodRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager));
-        raceMap.put(RaceType.HUNT, new HuntRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager));
-        raceMap.put(RaceType.QUIZ, new QuizRace(this, settingManager, rewardManager, timeManager, leaderboardManager));
-        raceMap.put(RaceType.CRAFT, new CraftRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager));
-        raceMap.put(RaceType.SCRAMBLE, new ScrambleRace(this, settingManager, rewardManager, timeManager, leaderboardManager));
+        this.raceMap = new EnumMap<>(Map.of(
+                RaceType.TYPE, new TypeRace(this, settingManager, rewardManager, timeManager, leaderboardManager),
+                RaceType.BLOCK, new BlockRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
+                RaceType.FISH, new FishRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
+                RaceType.FOOD, new FoodRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
+                RaceType.HUNT, new HuntRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
+                RaceType.QUIZ, new QuizRace(this, settingManager, rewardManager, timeManager, leaderboardManager),
+                RaceType.CRAFT, new CraftRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
+                RaceType.SCRAMBLE, new ScrambleRace(this, settingManager, rewardManager, timeManager, leaderboardManager)
+        ));
         raceMap.forEach((r, k) -> this.totalChance += k.getChance());
         this.random = new Random();
         this.raceDelay = settingManager.getInt(GeneralSetting.RACE_DELAY) * 20;
@@ -95,7 +93,7 @@ public class RaceManager {
                 currentRunningRace = race.getType();
                 race.run(plugin);
             }
-        }.runTaskTimer(plugin, 200, raceDelay);
+        }.runTaskTimer(plugin, 150, raceDelay);
     }
 
     private RaceType getRandomRaceType() {

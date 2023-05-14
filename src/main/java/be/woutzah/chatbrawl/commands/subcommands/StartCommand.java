@@ -10,6 +10,7 @@ import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StartCommand extends SubCommand {
     private final RaceManager raceManager;
@@ -23,13 +24,24 @@ public class StartCommand extends SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        raceManager.disableAutoCreation();
-        if (raceManager.getCurrentRunningRace() == null) raceManager.setCurrentRunningRace(RaceType.NONE);
+        if (args.length != 1) {
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    "You should insert a race", sender);
+            return;
+        }
+        if (Arrays.stream(RaceType.values()).noneMatch(raceType -> raceType.name().equals(args[0].toUpperCase()))) {
+            Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
+                    "Invalid type of race.", sender);
+            return;
+        }
+        ;
+
         if (raceManager.getCurrentRunningRace() != RaceType.NONE) {
             Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
                     settingManager.getString(LanguageSetting.RACE_STILL_RUNNING), sender);
             return;
         }
+        raceManager.disableAutoCreation();
         String raceTypeString = args[0];
         RaceType raceType = RaceType.NONE;
         raceType = RaceType.valueOf(raceTypeString.toUpperCase());

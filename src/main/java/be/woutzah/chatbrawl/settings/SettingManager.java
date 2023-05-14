@@ -18,7 +18,7 @@ public class SettingManager {
     public SettingManager(ChatBrawl plugin) {
         this.configManager = plugin.getConfigManager();
         this.raceTypeConfigMap = new HashMap<>();
-        raceTypeConfigMap.put(RaceType.GUESS, ConfigType.GUESSRACE);
+        raceTypeConfigMap.put(RaceType.TYPE, ConfigType.TYPERACE);
         raceTypeConfigMap.put(RaceType.BLOCK, ConfigType.BLOCKRACE);
         raceTypeConfigMap.put(RaceType.FISH, ConfigType.FISHRACE);
         raceTypeConfigMap.put(RaceType.FOOD, ConfigType.FOODRACE);

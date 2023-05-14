@@ -23,6 +23,7 @@ public abstract class ContestantRace extends Race {
     @Override
     public void beforeRaceStart() {
         contestantsManager.fillOnlinePlayers();
+        super.beforeRaceStart();
     }
 
     @Override

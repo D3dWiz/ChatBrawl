@@ -1,31 +1,95 @@
 package be.woutzah.chatbrawl.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Printer {
     private final static int CENTER_PX = 154;
 
+    public static String parseColor(String message) {
+        Component parsedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+        return LegacyComponentSerializer.legacySection().serialize(parsedMessage);
+    }
+
+    public static TextComponent parsedMessage(List<String> textList) {
+        TextComponent.Builder message = Component.text();
+        int lastIndex = textList.size() - 1;
+
+        for (int i = 0; i < textList.size(); i++) {
+            String entry = textList.get(i);
+
+            message.append(Component.text(parseColor(entry)));
+            if (!(i == lastIndex)) {
+                message.appendNewline();
+            }
+        }
+        return message.build();
+    }
+
+    public static String centerMessage(List<String> textList) {
+        if (textList.isEmpty()) return "";
+        TextComponent message = parsedMessage(textList);
+
+        return message.content();
+//        StringBuilder message = new StringBuilder();
+//        String[] lines = ChatColor.translateAlternateColorCodes('&', message.toString()).split("\n", 40);
+//        StringBuilder resultSb = new StringBuilder();
+//
+//        for (String line : lines) {
+//            int messagePxSize = 0;
+//            boolean previousCode = false;
+//            boolean isBold = false;
+//
+//            for (char c : line.toCharArray()) {
+//                if (c == '§') {
+//                    previousCode = true;
+//                } else if (previousCode) {
+//                    previousCode = false;
+//                    isBold = c == 'l';
+//                } else {
+//                    DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
+//                    messagePxSize = isBold ? messagePxSize + dFI.getBoldLength() : messagePxSize + dFI.getLength();
+//                    messagePxSize++;
+//                }
+//            }
+//            int toCompensate = CENTER_PX - messagePxSize / 2;
+//            int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
+//            int compensated = 0;
+//            StringBuilder sb = new StringBuilder();
+//            while (compensated < toCompensate) {
+//                sb.append(" ");
+//                compensated += spaceLength;
+//            }
+//            resultSb.append(sb).append(line).append("\n");
+//        }
+//        return resultSb.toString();
+    }
+
+    public static void sendParsedMessage(String message, Player player) {
+        player.sendMessage(Component.text(parseColor(message)));
+    }
+
+    public static void sendParsedMessage(String message, CommandSender sender) {
+        sender.sendMessage(Component.text(parseColor(message)));
+    }
+
     public static void sendParsedMessage(List<String> textList, Player player) {
         if (textList.isEmpty()) return;
-        StringBuilder sb = new StringBuilder();
-        textList.forEach(entry -> sb.append(parseColor(entry)));
-        player.sendMessage(Component.text(parseColor(sb.toString())));
+        TextComponent message = parsedMessage(textList);
+        player.sendMessage(message);
     }
 
     public static void sendParsedMessage(List<String> textList, CommandSender sender) {
         if (textList.isEmpty()) return;
-        StringBuilder sb = new StringBuilder();
-        textList.forEach(entry -> sb.append(parseColor(entry)));
-        sender.sendMessage(Component.text(parseColor(sb.toString())));
+        TextComponent message = parsedMessage(textList);
+        sender.sendMessage(message);
     }
 
     public static void printConsole(String text) {
@@ -39,93 +103,8 @@ public class Printer {
     }
 
     public static void broadcast(List<String> textList) {
-        if (textList.isEmpty()) return;
-        StringBuilder sb = new StringBuilder();
-        textList.forEach(entry -> sb.append(parseColor(entry)));
-        Bukkit.getServer().broadcast(Component.text(parseColor(parseColor(sb.toString()))), "cb.default");
-    }
-
-    public static String centerMessage(List<String> textList) {
-        if (textList.isEmpty()) return "";
-        StringBuilder message = new StringBuilder();
-        for (String entry : textList) {
-            message.append(entry);
-        }
-        String[] lines = ChatColor.translateAlternateColorCodes('&', message.toString()).split("\n", 40);
-        StringBuilder resultSb = new StringBuilder();
-
-        for (String line : lines) {
-            int messagePxSize = 0;
-            boolean previousCode = false;
-            boolean isBold = false;
-
-            for (char c : line.toCharArray()) {
-                if (c == '§') {
-                    previousCode = true;
-                } else if (previousCode) {
-                    previousCode = false;
-                    isBold = c == 'l';
-                } else {
-                    DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
-                    messagePxSize = isBold ? messagePxSize + dFI.getBoldLength() : messagePxSize + dFI.getLength();
-                    messagePxSize++;
-                }
-            }
-            int toCompensate = CENTER_PX - messagePxSize / 2;
-            int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
-            int compensated = 0;
-            StringBuilder sb = new StringBuilder();
-            while (compensated < toCompensate) {
-                sb.append(" ");
-                compensated += spaceLength;
-            }
-            resultSb.append(sb).append(line).append("\n");
-        }
-        return resultSb.toString();
-    }
-
-    public static String parseColor(String message) {
-        Component parsedMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
-        return LegacyComponentSerializer.legacySection().serialize(parsedMessage);
-    }
-
-    public static void sendParsedMessage(String message, Player player) {
-        if (message.isEmpty()) return;
-        Component deserialized;
-        Component serialized;
-        String[] split = message.split("\n");
-        for (String line : split) {
-            deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
-            serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
-            player.sendMessage(serialized);
-        }
-    }
-
-    public static void sendParsedMessage(String message, CommandSender sender) {
-        if (message.isEmpty()) return;
-        Component deserialized;
-        Component serialized;
-        String[] split = message.split("\n");
-        for (String line : split) {
-            deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
-            serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
-            sender.sendMessage(serialized);
-        }
-    }
-
-    public static void sendParsedBroadcast(String message) {
-        String[] split = message.split("\n");
-        List<Component> components = new ArrayList<>();
-        for (String line : split) {
-            Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(line);
-            Component serialized = Component.text(LegacyComponentSerializer.legacyAmpersand().serialize(deserialized));
-            components.add(serialized);
-        }
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (Component component : components) {
-                player.sendMessage(component);
-            }
-        }
+        TextComponent message = parsedMessage(textList);
+        Bukkit.getServer().broadcast(message, "cb.default");
     }
 
     public static String stripColors(String message) {

@@ -18,7 +18,6 @@ public abstract class ChatRace extends Race {
 
     }
 
-    @Override
     public void beforeRaceStart() {
         initRandomWord();
         super.beforeRaceStart();

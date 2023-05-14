@@ -12,6 +12,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.BlockRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
+import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -58,13 +59,14 @@ public class BlockRace extends ContestantRace {
     public void checkBlocksMined(BlockBreakEvent e) {
         if (!isActive()) return;
         Player player = e.getPlayer();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         Block minedBlock = e.getBlock();
         if (minedBlock.getType().equals(blockEntry.getMaterial())) {
             UUID uuid = player.getUniqueId();
             contestantsManager.addScore(uuid);
             if (contestantsManager.hasWon(uuid, blockEntry.getAmount())) {
                 onWinning(player);
+                contestantsManager.removeOnlinePlayers();
             }
         }
     }
@@ -72,7 +74,7 @@ public class BlockRace extends ContestantRace {
     @Override
     public String replacePlaceholders(String message) {
         return message
-                .replace("<block>", blockEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+                .replace("<block>", Printer.capitalize(blockEntry.getMaterial().toString().toLowerCase().replace("_", " ")))
                 .replace("<amount>", String.valueOf(blockEntry.getAmount()))
                 .replace("<prefix>", settingManager.getString(GeneralSetting.PLUGIN_PREFIX));
     }

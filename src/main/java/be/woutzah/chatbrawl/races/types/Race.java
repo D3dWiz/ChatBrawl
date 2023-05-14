@@ -17,7 +17,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -141,6 +140,37 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     @Override
+    public void beforeRaceStart() {
+        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isBossBarEnabled()) showBossBar();
+        if (isActionBarEnabled()) showActionBar();
+    }
+
+    public void run(ChatBrawl plugin) {
+        timeManager.startTimer();
+        beforeRaceStart();
+        if (isSoundEnabled()) playSound(beginSound);
+        this.raceTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                afterRaceEnd();
+                if (isAnnounceEndEnabled()) announceEnd();
+            }
+        }.runTaskLater(plugin, duration);
+        Bukkit.getScheduler().isCurrentlyRunning(raceTask.getTaskId());
+    }
+
+    @Override
+    public void afterRaceEnd() {
+        timeManager.stopTimer();
+        if (isSoundEnabled()) playSound(endSound);
+        if (isBossBarEnabled()) stopBossBar();
+        if (isActionBarEnabled()) stopActionBar();
+        raceManager.setCurrentRunningRace(RaceType.NONE);
+        setActive(false);
+    }
+
+    @Override
     public void announceEnd() {
         Printer.broadcast(settingManager.getStringList(type, RaceSetting.LANGUAGE_ENDED));
     }
@@ -161,40 +191,16 @@ public abstract class Race implements Raceable, Announceable, Listener {
         Printer.broadcast(messageList);
     }
 
-    @Override
-    public void beforeRaceStart() {
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
-        if (isBossBarEnabled()) showBossBar();
-        if (isActionBarEnabled()) showActionBar();
-    }
-
-    @Override
-    public void afterRaceEnd() {
-        timeManager.stopTimer();
-        if (isSoundEnabled()) playSound(endSound);
-        if (isBossBarEnabled()) stopBossBar();
-        if (isActionBarEnabled()) stopActionBar();
-        raceManager.setCurrentRunningRace(RaceType.NONE);
-        setActive(false);
-    }
-
-    public void run(ChatBrawl plugin) {
-        try {
-            timeManager.startTimer();
-            beforeRaceStart();
-            if (isSoundEnabled()) playSound(beginSound);
-            this.raceTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    afterRaceEnd();
-                    if (isAnnounceEndEnabled()) announceEnd();
-                }
-            }.runTaskLater(plugin, duration);
-            Bukkit.getScheduler().isCurrentlyRunning(raceTask.getTaskId());
-        } catch (Exception e) {
-            raceManager.setCurrentRunningRace(RaceType.NONE);
-            e.printStackTrace();
+    public void onWinning(Player player) {
+        afterRaceEnd();
+        if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
+        if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
+        this.raceTask.cancel();
+        rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
+        if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
+            leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
         }
+        Printer.sendParsedMessage(getWinnerPersonal(), player);
     }
 
     @Override
@@ -263,24 +269,12 @@ public abstract class Race implements Raceable, Announceable, Listener {
         isActive = active;
     }
 
-    public void raceChecks(Player player) {
+    public boolean raceChecks(Player player) {
+        if (player == null) return true;
         if (!raceManager.isCreativeAllowed()) {
-            if (player.getGameMode() == GameMode.CREATIVE) return;
+            if (player.getGameMode() == GameMode.CREATIVE) return true;
         }
-        World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.getName())) return;
-    }
-
-    public void onWinning(Player player) {
-        afterRaceEnd();
-        if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
-        if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
-        this.raceTask.cancel();
-        rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
-        if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
-            leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
-        }
-        Printer.sendParsedMessage(getWinnerPersonal(), player);
+        return !raceManager.isWorldAllowed(player.getWorld().getName());
     }
 
 }

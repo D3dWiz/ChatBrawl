@@ -11,6 +11,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.FishRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
+import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -55,7 +56,7 @@ public class FishRace extends ContestantRace {
     public void checkFishedObjects(PlayerFishEvent e) {
         if (!isActive()) return;
         Player player = e.getPlayer();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         if (e.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
             Item caughtItem = (Item) e.getCaught();
             if (caughtItem == null) return;
@@ -69,7 +70,7 @@ public class FishRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<fish>", fishEntry.getMaterial().toString().replace("_", " "))
+        return message.replace("<fish>", Printer.capitalize(fishEntry.getMaterial().toString().replace("_", " ")))
                 .replace("<amount>", String.valueOf(fishEntry.getAmount()));
     }
 

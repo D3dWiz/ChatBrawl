@@ -2,7 +2,7 @@ package be.woutzah.chatbrawl.races.types;
 
 public enum RaceType {
     NONE,
-    GUESS,
+    TYPE,
     BLOCK,
     FISH,
     FOOD,

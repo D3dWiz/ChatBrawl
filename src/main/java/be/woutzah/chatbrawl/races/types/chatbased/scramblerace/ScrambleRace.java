@@ -104,7 +104,7 @@ public class ScrambleRace extends ChatRace {
     public void checkWordInChat(AsyncChatEvent e) {
         if (!isActive()) return;
         Player player = e.getPlayer();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         String message = Printer.stripColors(e.message().toString());
         if (raceManager.startsWithForbiddenCommand(message)) return;
         if (!message.equals(scrambleWord.getWord())) return;

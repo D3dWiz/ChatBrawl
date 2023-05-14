@@ -11,6 +11,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.FoodRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
+import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,7 +55,7 @@ public class FoodRace extends ContestantRace {
     public void onFoodConsume(PlayerItemConsumeEvent e) {
         if (!isActive()) return;
         Player player = e.getPlayer();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         ItemStack consumedItemstack = e.getItem();
         if (consumedItemstack.getType().equals(foodEntry.getMaterial())) {
             onWinning(player);
@@ -64,7 +65,7 @@ public class FoodRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<food>", foodEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+        return message.replace("<food>", Printer.capitalize(foodEntry.getMaterial().toString().toLowerCase().replace("_", " ")))
                 .replace("<amount>", String.valueOf(foodEntry.getAmount()));
     }
 

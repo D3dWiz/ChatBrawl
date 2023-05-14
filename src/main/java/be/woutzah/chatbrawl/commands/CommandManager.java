@@ -52,7 +52,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            Printer.sendParsedMessage("&cmake sure to type a subcommand!", sender);
+            Printer.sendParsedMessage("&cMake sure to type a subcommand!", sender);
             return true;
         }
 

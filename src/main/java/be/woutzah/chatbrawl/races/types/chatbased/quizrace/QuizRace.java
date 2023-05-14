@@ -50,7 +50,7 @@ public class QuizRace extends ChatRace {
     public void checkAnswerInChat(AsyncChatEvent e) {
         if (!isActive()) return;
         Player player = e.getPlayer();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         String message = Printer.stripColors(e.originalMessage().toString());
         if (raceManager.startsWithForbiddenCommand(message)) return;
         if (question.getAnswers().stream().anyMatch(a -> a.equalsIgnoreCase(message))) {

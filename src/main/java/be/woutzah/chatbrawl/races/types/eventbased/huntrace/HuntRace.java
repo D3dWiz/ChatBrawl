@@ -11,8 +11,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.HuntRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,12 +58,7 @@ public class HuntRace extends ContestantRace {
         //do checks
         if (!isActive()) return;
         Player player = e.getEntity().getKiller();
-        if (player == null) return;
-        if (!raceManager.isCreativeAllowed()) {
-            if (player.getGameMode() == GameMode.CREATIVE) return;
-        }
-        World world = player.getWorld();
-        if (!raceManager.isWorldAllowed(world.getName())) return;
+        if (raceChecks(player)) return;
         EntityType killedEntityType = e.getEntity().getType();
         if (killedEntityType.equals(huntEntry.getEntityType())) {
             UUID uuid = player.getUniqueId();
@@ -79,7 +73,7 @@ public class HuntRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<mob>", huntEntry.getEntityType().toString().toLowerCase().replace("_", " "))
+        return message.replace("<mob>", Printer.capitalize(huntEntry.getEntityType().toString().toLowerCase().replace("_", " ")))
                 .replace("<amount>", String.valueOf(huntEntry.getAmount()));
     }
 

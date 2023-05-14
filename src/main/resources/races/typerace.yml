@@ -1,10 +1,9 @@
 enabled: true
 chance: 10
 duration: 900
-food:
+words:
   1:
-    food: COD
-    amount: 1
+    word: Woolly Development
     rewards:
       - 1
       - 2
@@ -22,26 +21,26 @@ sound:
   begin-race: BLOCK_ANVIL_PLACE
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
-  bossbar: '&6&oFood Race &7&l>> &fConsume &b<amount> &fx &b<food>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oFood Race &7&l>> &fConsume &b<amount> &fx &b<food>. &7Time left: &b<timeLeft>'
+  bossbar: '&6&oType Race &7&l>> &fType &b<word>. &7Time left: &b<timeLeft>'
+  actionbar: '&6&oType Race &7&l>> &fType &b<word>. &7Time left: &b<timeLeft>'
   start:
     - ' '
-    - '&7&l>&m========&r&7{ &7(&e!&7) &6Food Race &7(&e!&7) &7}&m=======&r&7&l>'
+    - '&7&l>&m======&r&7{ &7(&e!&7) &6Type Race &7(&e!&7) &7}&m======&r&7&l>'
     - ' '
-    - ' &fConsume the following food:'
+    - ' &fType the following word:'
     - ' '
-    - '       &b<amount> &fx &b<food>'
+    - '        &b<word>'
     - ' '
     - '&7&l>&m===========================&r&7&l>'
     - ' '
   ended:
-    - '&7The &6Food Race &7ended without a winner!'
+    - '&7The &6Type Race &7ended without a winner!'
   winner:
     - ' '
-    - '&7&l>&m======&r&7{ &7(&e*&7) &6Food Race Winner &7(&e*&7) &7}&m======&r&7&l>'
+    - '&7&l>&m====&r&7{ &7(&e*&7) &6Type Race Winner &7(&e*&7) &7}&m====&r&7&l>'
     - ' '
     - ' &fCongrats! &b<player> &fwas the fastest!'
     - ' '
     - '&7&l>&m==============================&r&7&l>'
     - ' '
-  winner-personal: '&7you won the &eFood Race&7!'
+  winner-personal: '&7you won the &eType Race&7!'

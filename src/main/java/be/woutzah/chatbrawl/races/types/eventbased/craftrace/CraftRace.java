@@ -11,6 +11,7 @@ import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.CraftRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
+import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,7 +57,7 @@ public class CraftRace extends ContestantRace {
     public void checkCraftedItems(CraftItemEvent e) {
         if (!isActive()) return;
         Player player = (Player) e.getWhoClicked();
-        raceChecks(player);
+        if (raceChecks(player)) return;
         if (!(e.getWhoClicked().getInventory().firstEmpty() == -1)) {
             if (e.getSlotType() == InventoryType.SlotType.RESULT) {
                 ItemStack craftedItemStack;
@@ -77,6 +78,7 @@ public class CraftRace extends ContestantRace {
                     contestantsManager.addScore(uuid, craftedItemStack.getAmount());
                     if (contestantsManager.hasWon(uuid, craftEntry.getAmount())) {
                         onWinning(player);
+                        contestantsManager.removeOnlinePlayers();
                     }
                 }
             }
@@ -85,7 +87,7 @@ public class CraftRace extends ContestantRace {
 
     @Override
     public String replacePlaceholders(String message) {
-        return message.replace("<item>", craftEntry.getMaterial().toString().toLowerCase().replace("_", " "))
+        return message.replace("<item>", Printer.capitalize(craftEntry.getMaterial().toString().toLowerCase().replace("_", " ")))
                 .replace("<amount>", String.valueOf(craftEntry.getAmount()));
     }
 
