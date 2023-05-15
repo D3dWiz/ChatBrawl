@@ -1,35 +1,29 @@
-package be.woutzah.chatbrawl.races.types.eventbased.foodrace;
+package be.woutzah.chatbrawl.races.types.eventbased;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
-import be.woutzah.chatbrawl.races.types.ContestantRace;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.FoodRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class FoodRace extends ContestantRace {
-    private final List<FoodEntry> foodEntryList;
-    private FoodEntry foodEntry;
+public class FoodRace extends EventRace {
 
     public FoodRace(RaceManager raceManager, SettingManager settingManager,
                     RewardManager rewardManager, TimeManager timeManager,
                     ContestantsManager contestantsManager, LeaderboardManager leaderboardManager) {
         super(RaceType.FOOD, raceManager, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager);
-        this.foodEntryList = new ArrayList<>();
         initFoodEntryList();
     }
 
@@ -43,12 +37,8 @@ public class FoodRace extends ContestantRace {
             }
             int amount = settingManager.getInt(ConfigType.FOODRACE, "food." + entry + ".amount");
             List<Integer> rewardIds = settingManager.getIntegerList(ConfigType.FOODRACE, "food." + entry + ".rewards");
-            foodEntryList.add(new FoodEntry(material, amount, rewardIds));
+            eventEntryList.add(new EventEntry<>(material, rewardIds, amount));
         });
-    }
-
-    public void initRandomFoodEntry() {
-        foodEntry = foodEntryList.get(random.nextInt(foodEntryList.size()));
     }
 
     @EventHandler
@@ -57,21 +47,9 @@ public class FoodRace extends ContestantRace {
         Player player = e.getPlayer();
         if (raceChecks(player)) return;
         ItemStack consumedItemstack = e.getItem();
-        if (consumedItemstack.getType().equals(foodEntry.getMaterial())) {
+        if (eventEntryList.stream().anyMatch(s -> s.getMaterial().equals(consumedItemstack.getType()))) {
             onWinning(player);
             contestantsManager.removeOnlinePlayers();
         }
-    }
-
-    @Override
-    public String replacePlaceholders(String message) {
-        return message.replace("<food>", Printer.capitalize(foodEntry.getMaterial().toString().toLowerCase().replace("_", " ")))
-                .replace("<amount>", String.valueOf(foodEntry.getAmount()));
-    }
-
-    @Override
-    public void beforeRaceStart() {
-        initRandomFoodEntry();
-        super.beforeRaceStart();
     }
 }

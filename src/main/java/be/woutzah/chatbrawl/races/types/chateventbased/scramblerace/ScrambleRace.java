@@ -1,13 +1,12 @@
-package be.woutzah.chatbrawl.races.types.chatbased.scramblerace;
+package be.woutzah.chatbrawl.races.types.chateventbased.scramblerace;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.RaceType;
-import be.woutzah.chatbrawl.races.types.chatbased.ChatRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.ChatRace;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
-import be.woutzah.chatbrawl.settings.races.RaceSetting;
 import be.woutzah.chatbrawl.settings.races.ScrambleRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.Printer;
@@ -22,30 +21,27 @@ import java.util.stream.Collectors;
 
 public class ScrambleRace extends ChatRace {
 
-    private final List<ScrambleWord> scrambleWordList;
-    private ScrambleWord scrambleWord;
-
     public ScrambleRace(RaceManager raceManager, SettingManager settingManager,
                         RewardManager rewardManager, TimeManager timeManager,
                         LeaderboardManager leaderboardManager) {
         super(RaceType.SCRAMBLE, raceManager, settingManager, rewardManager, timeManager, leaderboardManager);
-        this.scrambleWordList = new ArrayList<>();
-        initScrambleWorldList();
+        this.chatEntryList = new ArrayList<>();
+        initChatEntryList();
     }
 
-    private void initScrambleWorldList() {
+    private void initChatEntryList() {
         settingManager.getConfigSection(ScrambleRaceSetting.WORDS).getKeys(false).forEach(entry -> {
             String word = settingManager.getString(ConfigType.SCRAMBLERACE, "words." + entry + ".word");
-            int difficulty = settingManager.getInt(ConfigType.SCRAMBLERACE, "words." + entry + ".difficulty");
             List<Integer> rewardIds = settingManager.getIntegerList(ConfigType.SCRAMBLERACE, "words." + entry + ".rewards");
-            scrambleWordList.add(new ScrambleWord(word, difficulty, rewardIds));
+            int difficulty = settingManager.getInt(ConfigType.SCRAMBLERACE, "words." + entry + ".difficulty");
+            chatEntryList.add(new ScrambleWord(word, List.of(word), rewardIds, difficulty));
         });
     }
 
     @Override
-    public void initRandomWord() {
-        scrambleWord = scrambleWordList.get(random.nextInt(scrambleWordList.size()));
-        scrambleWord.setScrambledWord(scramble(scrambleWord.getWord(), scrambleWord.getDifficulty()));
+    public void initRandomEntry() {
+        chatEntry = chatEntryList.get(random.nextInt(chatEntryList.size()));
+        chatEntry.setChatEntry(scramble(chatEntry.getChatEntry(), settingManager.getInt(ConfigType.SCRAMBLERACE, "words." + (chatEntryList.indexOf(chatEntry) + 1) + ".difficulty")));
     }
 
     public String scramble(String word, int difficulty) {
@@ -98,30 +94,5 @@ public class ScrambleRace extends ChatRace {
                 .replace("Т", "7").replace("т", "7")
                 .replace("Г", "7").replace("г", "7")
                 .replace("В", "8").replace("в", "8");
-    }
-
-    @EventHandler
-    public void checkWordInChat(AsyncChatEvent e) {
-        if (!isActive()) return;
-        Player player = e.getPlayer();
-        if (raceChecks(player)) return;
-        String message = Printer.stripColors(e.message().toString());
-        if (raceManager.startsWithForbiddenCommand(message)) return;
-        if (!message.equals(scrambleWord.getWord())) return;
-        onWinning(player);
-    }
-
-    @Override
-    public String replacePlaceholders(String message) {
-        return message.replace("<word>", scrambleWord.getScrambledWord());
-    }
-
-    @Override
-    public void announceEnd() {
-        List<String> lines = settingManager.getStringList(RaceType.SCRAMBLE, RaceSetting.LANGUAGE_ENDED)
-                .stream()
-                .map(line -> line.replace("<answer>", scrambleWord.getWord()))
-                .collect(Collectors.toList());
-        Printer.broadcast(lines);
     }
 }

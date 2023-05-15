@@ -18,6 +18,5 @@ public interface Announceable {
     void showActionBar();
 
     void stopActionBar();
-
     String replacePlaceholders(String message);
 }

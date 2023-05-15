@@ -1,17 +1,15 @@
-package be.woutzah.chatbrawl.races.types.eventbased.fishrace;
+package be.woutzah.chatbrawl.races.types.eventbased;
 
 import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
-import be.woutzah.chatbrawl.races.types.ContestantRace;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.FishRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
 import be.woutzah.chatbrawl.util.ErrorHandler;
-import be.woutzah.chatbrawl.util.Printer;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -21,16 +19,14 @@ import org.bukkit.event.player.PlayerFishEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FishRace extends ContestantRace {
-
-    private final List<FishEntry> fishEntryList;
-    private FishEntry fishEntry;
+public class FishRace extends EventRace {
+    private EventEntry eventEntry;
 
     public FishRace(RaceManager raceManager, SettingManager settingManager,
                     RewardManager rewardManager, TimeManager timeManager,
                     ContestantsManager contestantsManager, LeaderboardManager leaderboardManager) {
         super(RaceType.FISH, raceManager, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager);
-        this.fishEntryList = new ArrayList<>();
+        this.eventEntryList = new ArrayList<>();
         initFishEntryList();
     }
 
@@ -44,12 +40,8 @@ public class FishRace extends ContestantRace {
             }
             int amount = settingManager.getInt(ConfigType.FISHRACE, "fish." + entry + ".amount");
             List<Integer> rewardIds = settingManager.getIntegerList(ConfigType.FISHRACE, "fish." + entry + ".rewards");
-            fishEntryList.add(new FishEntry(material, amount, rewardIds));
+            eventEntryList.add(new EventEntry<>(material, rewardIds, amount));
         });
-    }
-
-    public void initRandomFishEntry() {
-        fishEntry = fishEntryList.get(random.nextInt(fishEntryList.size()));
     }
 
     @EventHandler
@@ -61,22 +53,10 @@ public class FishRace extends ContestantRace {
             Item caughtItem = (Item) e.getCaught();
             if (caughtItem == null) return;
             Material caughtMaterial = caughtItem.getItemStack().getType();
-            if (caughtMaterial.equals(fishEntry.getMaterial())) {
+            if (eventEntryList.stream().anyMatch(s -> s.getMaterial().equals(caughtMaterial))) {
                 onWinning(player);
                 contestantsManager.removeOnlinePlayers();
             }
         }
-    }
-
-    @Override
-    public String replacePlaceholders(String message) {
-        return message.replace("<fish>", Printer.capitalize(fishEntry.getMaterial().toString().replace("_", " ")))
-                .replace("<amount>", String.valueOf(fishEntry.getAmount()));
-    }
-
-    @Override
-    public void beforeRaceStart() {
-        initRandomFishEntry();
-        super.beforeRaceStart();
     }
 }

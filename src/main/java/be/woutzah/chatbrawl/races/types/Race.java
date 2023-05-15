@@ -4,6 +4,7 @@ import be.woutzah.chatbrawl.ChatBrawl;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardStatistic;
 import be.woutzah.chatbrawl.races.RaceManager;
+import be.woutzah.chatbrawl.races.types.eventbased.EventEntry;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
@@ -147,6 +148,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     public void run(ChatBrawl plugin) {
+        isActive = true;
         timeManager.startTimer();
         beforeRaceStart();
         if (isSoundEnabled()) playSound(beginSound);
@@ -196,7 +198,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
         if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
         if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
         this.raceTask.cancel();
-        rewardManager.executeRandomRewardSync(RaceEntry.getRewardIds(), player);
+        rewardManager.executeRandomRewardSync(EventEntry.getRewardIds(), player);
         if (settingManager.getBoolean(GeneralSetting.MYSQL_ENABLED)) {
             leaderboardManager.addWin(new LeaderboardStatistic(player.getUniqueId(), type, timeManager.getTotalSeconds()));
         }

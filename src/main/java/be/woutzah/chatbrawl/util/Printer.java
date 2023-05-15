@@ -38,6 +38,7 @@ public class Printer {
         TextComponent message = parsedMessage(textList);
 
         return message.content();
+        // TODO fix this
 //        StringBuilder message = new StringBuilder();
 //        String[] lines = ChatColor.translateAlternateColorCodes('&', message.toString()).split("\n", 40);
 //        StringBuilder resultSb = new StringBuilder();
@@ -107,8 +108,8 @@ public class Printer {
         Bukkit.getServer().broadcast(message, "cb.default");
     }
 
-    public static String stripColors(String message) {
-        return PlainTextComponentSerializer.plainText().deserialize(message).toString();
+    public static String stripColors(Component message) {
+        return PlainTextComponentSerializer.plainText().serialize(message);
     }
 
     public static String capitalize(String text) {

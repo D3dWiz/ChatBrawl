@@ -5,14 +5,10 @@ import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
-import be.woutzah.chatbrawl.races.types.chatbased.quizrace.QuizRace;
-import be.woutzah.chatbrawl.races.types.chatbased.scramblerace.ScrambleRace;
-import be.woutzah.chatbrawl.races.types.chatbased.typerace.TypeRace;
-import be.woutzah.chatbrawl.races.types.eventbased.blockrace.BlockRace;
-import be.woutzah.chatbrawl.races.types.eventbased.craftrace.CraftRace;
-import be.woutzah.chatbrawl.races.types.eventbased.fishrace.FishRace;
-import be.woutzah.chatbrawl.races.types.eventbased.foodrace.FoodRace;
-import be.woutzah.chatbrawl.races.types.eventbased.huntrace.HuntRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.quizrace.QuizRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.scramblerace.ScrambleRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.typerace.TypeRace;
+import be.woutzah.chatbrawl.races.types.eventbased.*;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
 import be.woutzah.chatbrawl.settings.LanguageSetting;
@@ -91,6 +87,7 @@ public class RaceManager {
                     return;
                 }
                 currentRunningRace = race.getType();
+                Printer.broadcast(currentRunningRace.toString());
                 race.run(plugin);
             }
         }.runTaskTimer(plugin, 150, raceDelay);
