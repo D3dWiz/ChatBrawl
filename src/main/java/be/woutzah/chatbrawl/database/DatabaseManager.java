@@ -25,7 +25,7 @@ public class DatabaseManager {
         String host = settingManager.getString(GeneralSetting.MYSQL_HOST);
         String port = settingManager.getString(GeneralSetting.MYSQL_PORT);
         String database = settingManager.getString(GeneralSetting.MYSQL_DATABASE);
-        return "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useSSL=false";
+        return "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true<red>useSSL=false";
     }
 
     private String getDBUser() {

@@ -10,11 +10,12 @@ mobs:
       - 2
 enable-firework: true
 enable-bossbar: true
+# Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
 bossbar-color: BLUE
+# Styles: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
 bossbar-style: PROGRESS
 enable-actionbar: true
 broadcast:
-  center-messages: false
   enable-start: true
   enable-end: true
 sound:
@@ -22,26 +23,26 @@ sound:
   begin-race: BLOCK_ANVIL_PLACE
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
-  bossbar: '&6&oHunt Race &7&l>> &fKill &b<amount> &fx &b<mob>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oHunt Race &7&l>> &fKill &b<amount> &fx &b<mob> &7Time left: &b<timeLeft>'
+  bossbar: '<gold><i>Hunt Race <gray><b>>></b> <white>Kill <aqua><amount> <white>x <aqua><mob>. <gray>Time left: <aqua><timeLeft>'
+  actionbar: '<gold><i>Hunt Race <gray><b>>></b> <white>Kill <aqua><amount> <white>x <aqua><mob> <gray>Time left: <aqua><timeLeft>'
   start:
     - ' '
-    - '&7&l>&m========&r&7{ &7(&e!&7) &6Hunt Race &7(&e!&7) &7}&m=======&r&7&l>'
+    - '<gray><b>></b><st>========<reset><gray>{ <gray>(<yellow>!<gray>) <gold>Hunt Race <gray>(<yellow>!<gray>) <gray>}<st>=======<reset><gray><b>>'
     - ' '
-    - ' &fKill the following mobs:'
+    - ' <white>Kill the following mobs:'
     - ' '
-    - '       &b<amount> &fx &b<mob>'
+    - '       <aqua><amount> <white>x <aqua><mob>'
     - ' '
-    - '&7&l>&m===========================&r&7&l>'
+    - '<gray><b>></b><st>===========================<reset><gray><b>>'
     - ' '
   ended:
-    - '&7The &6Hunt Race &7ended without a winner!'
+    - '<gray>The <gold>Hunt Race <gray>ended without a winner!'
   winner:
     - ' '
-    - '&7&l>&m======&r&7{ &7(&e*&7) &6Hunt Race Winner &7(&e*&7) &7}&m======&r&7&l>'
+    - '<gray><b>></b><st>======<reset><gray>{ <gray>(<yellow>*<gray>) <gold>Hunt Race Winner <gray>(<yellow>*<gray>) <gray>}<st>======<reset><gray><b>>'
     - ' '
-    - ' &fCongrats! &b<player> &fwas the fastest!'
+    - ' <white>Congrats! <aqua><player> <white>was the fastest!'
     - ' '
-    - '&7&l>&m==============================&r&7&l>'
+    - '<gray><b>></b><st>==============================<reset><gray><b>>'
     - ' '
-  winner-personal: '&7you won the &eHunt Race&7!'
+  winner-personal: '<gray>You won the <yellow>Hunt Race<gray>!'

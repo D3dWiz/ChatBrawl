@@ -5,7 +5,6 @@ import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.settings.RewardSetting;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.util.Printer;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +13,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class RewardManager {
 
@@ -45,7 +43,7 @@ public class RewardManager {
                 .stream()
                 .filter(r -> selectedRewardIds
                         .contains(Integer.valueOf(r.getId())))
-                .collect(Collectors.toList());
+                .toList();
         int totalChance = selectedRewards.stream().mapToInt(Reward::getChance).sum();
         int index = random.nextInt(totalChance);
         int sum = 0;
@@ -61,8 +59,8 @@ public class RewardManager {
         });
         Printer.broadcast(selectedReward.getBroadcast()
                 .replace("<player>", player.getName()));
-        Title title = Title.title(Component.text(Printer.parseColor(selectedReward.getTitle())),
-                Component.text(Printer.parseColor(selectedReward.getSubtitle())), Title.Times.times(Duration.ofMillis(10), Duration.ofMillis(70), Duration.ofMillis(20)));
+        Title title = Title.title(Printer.parseColor(selectedReward.getTitle()),
+                Printer.parseColor(selectedReward.getSubtitle()), Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500)));
         player.showTitle(title);
     }
 

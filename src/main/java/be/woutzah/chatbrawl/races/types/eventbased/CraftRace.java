@@ -46,7 +46,7 @@ public class CraftRace extends EventRace {
 
     @EventHandler(ignoreCancelled = true)
     public void checkCraftedItems(CraftItemEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = (Player) e.getWhoClicked();
         if (raceChecks(player)) return;
         if (!(e.getWhoClicked().getInventory().firstEmpty() == -1)) {

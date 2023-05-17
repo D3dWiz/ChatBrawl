@@ -1,18 +1,15 @@
-package be.woutzah.chatbrawl.races.types.chateventbased.scramblerace;
+package be.woutzah.chatbrawl.races.types.chateventbased;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.RaceManager;
 import be.woutzah.chatbrawl.races.types.RaceType;
 import be.woutzah.chatbrawl.races.types.chateventbased.ChatRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.ScrambleWord;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.SettingManager;
 import be.woutzah.chatbrawl.settings.races.ScrambleRaceSetting;
 import be.woutzah.chatbrawl.time.TimeManager;
-import be.woutzah.chatbrawl.util.Printer;
-import io.papermc.paper.event.player.AsyncChatEvent;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -43,7 +43,7 @@ public class FoodRace extends EventRace {
 
     @EventHandler
     public void onFoodConsume(PlayerItemConsumeEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = e.getPlayer();
         if (raceChecks(player)) return;
         ItemStack consumedItemstack = e.getItem();

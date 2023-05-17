@@ -28,7 +28,7 @@ public class LeaderboardUserDAO {
                      "racetype varchar(36) ,seconds int)")) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            ErrorHandler.error("&cDatabase could not be created! Check your MySQL Settings!");
+            ErrorHandler.error("<red>Database could not be created! Check your MySQL Settings!");
             e.printStackTrace();
         }
     }
@@ -42,7 +42,7 @@ public class LeaderboardUserDAO {
             stmt.setInt(3, leaderboardStatistic.getSeconds());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't leaderboard statistic!");
+            ErrorHandler.error("<red>Couldn't leaderboard statistic!");
             e.printStackTrace();
         }
     }
@@ -61,7 +61,7 @@ public class LeaderboardUserDAO {
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve leaderboard statistics!");
+            ErrorHandler.error("<red>Couldn't retrieve leaderboard statistics!");
             e.printStackTrace();
         }
         return statList;
@@ -83,7 +83,7 @@ public class LeaderboardUserDAO {
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve most total user wins!");
+            ErrorHandler.error("<red>Couldn't retrieve most total user wins!");
             e.printStackTrace();
         }
         return userList;
@@ -106,7 +106,7 @@ public class LeaderboardUserDAO {
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve most total user wins for race!");
+            ErrorHandler.error("<red>Couldn't retrieve most total user wins for race!");
             e.printStackTrace();
         }
         return userList;
@@ -129,7 +129,7 @@ public class LeaderboardUserDAO {
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve fastest time users for race!");
+            ErrorHandler.error("<red>Couldn't retrieve fastest time users for race!");
             e.printStackTrace();
         }
         return userList;
@@ -147,14 +147,14 @@ public class LeaderboardUserDAO {
                     try {
                         racetype = RaceType.valueOf(rs.getString("racetype").toUpperCase());
                     } catch (Exception ex) {
-                        ErrorHandler.error("&cCouldn't retrieve wins for user! --> invalid racetype");
+                        ErrorHandler.error("<red>Couldn't retrieve wins for user! --> invalid racetype");
                     }
                     int wins = rs.getInt("wins");
                     raceWinsMap.put(racetype, wins);
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve wins for user!");
+            ErrorHandler.error("<red>Couldn't retrieve wins for user!");
             e.printStackTrace();
         }
         return raceWinsMap;
@@ -172,14 +172,14 @@ public class LeaderboardUserDAO {
                     try {
                         racetype = RaceType.valueOf(rs.getString("racetype").toUpperCase());
                     } catch (Exception ex) {
-                        ErrorHandler.error("&cCouldn't retrieve fastest times for user! --> invalid racetype");
+                        ErrorHandler.error("<red>Couldn't retrieve fastest times for user! --> invalid racetype");
                     }
                     int seconds = rs.getInt("time");
                     raceTimesMap.put(racetype, seconds);
                 }
             }
         } catch (SQLException e) {
-            ErrorHandler.error("&cCouldn't retrieve fastest times for user!");
+            ErrorHandler.error("<red>Couldn't retrieve fastest times for user!");
             e.printStackTrace();
         }
         return raceTimesMap;

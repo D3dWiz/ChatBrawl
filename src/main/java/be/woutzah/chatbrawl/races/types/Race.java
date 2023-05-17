@@ -14,7 +14,6 @@ import be.woutzah.chatbrawl.util.FireWorkUtil;
 import be.woutzah.chatbrawl.util.Printer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -69,15 +68,11 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     @Override
-    public void announceStart(boolean center) {
+    public void announceStart() {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_START)
                 .stream()
                 .map(this::replacePlaceholders)
                 .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
         Printer.broadcast(messageList);
     }
 
@@ -87,16 +82,12 @@ public abstract class Race implements Raceable, Announceable, Listener {
                 .stream()
                 .map(this::replacePlaceholders)
                 .collect(Collectors.toList());
-        if (isCenterMessages()) {
-            Printer.sendParsedMessage(Printer.centerMessage(messageList), player);
-            return;
-        }
-        Printer.sendParsedMessage(messageList, player);
+        Printer.sendMultilineParsedMessage(messageList, player);
     }
 
     @Override
     public void showBossBar() {
-        Component startMessage = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
+        Component startMessage = Printer.parseColor(replacePlaceholders(settingManager.getString(this.type, RaceSetting.LANGUAGE_BOSSBAR))
                 .replace("<timeLeft>", String.valueOf(timeManager.formatTime(raceManager.getRace(this.type).getDurationSeconds()))));
         final BossBar bossBar = BossBar.bossBar(startMessage, 1.0f, BossBar.Color.valueOf(settingManager.getString(this.type, RaceSetting.BOSSBAR_COLOR)), BossBar.Overlay.valueOf(settingManager.getString(this.type, RaceSetting.BOSSBAR_STYLE)));
         this.activeBossBar = bossBar;
@@ -105,7 +96,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
             public void run() {
                 int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
                 float remainingTimePercent = ((float) timeManager.getRemainingTime(RaceType.BLOCK) / getDurationSeconds());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(raceManager.getCurrentRunningRace(), RaceSetting.LANGUAGE_BOSSBAR))
+                Component message = Printer.parseColor(replacePlaceholders(settingManager.getString(raceManager.getCurrentRunningRace(), RaceSetting.LANGUAGE_BOSSBAR))
                         .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
                 bossBar.name(message);
                 bossBar.progress(remainingTimePercent);
@@ -128,7 +119,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
             @Override
             public void run() {
                 int remainingTime = timeManager.getRemainingTime(raceManager.getCurrentRunningRace());
-                Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(replacePlaceholders(settingManager.getString(getType(), RaceSetting.LANGUAGE_ACTIONBAR))
+                Component message = Printer.parseColor(replacePlaceholders(settingManager.getString(getType(), RaceSetting.LANGUAGE_ACTIONBAR))
                         .replace("<timeLeft>", String.valueOf(timeManager.formatTime(remainingTime))));
                 Bukkit.getServer().sendActionBar(message);
             }
@@ -142,7 +133,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
 
     @Override
     public void beforeRaceStart() {
-        if (isAnnounceStartEnabled()) announceStart(isCenterMessages());
+        if (isAnnounceStartEnabled()) announceStart();
         if (isBossBarEnabled()) showBossBar();
         if (isActionBarEnabled()) showActionBar();
     }
@@ -178,7 +169,7 @@ public abstract class Race implements Raceable, Announceable, Listener {
     }
 
     @Override
-    public void announceWinner(boolean center, Player player) {
+    public void announceWinner(Player player) {
         List<String> messageList = settingManager.getStringList(this.type, RaceSetting.LANGUAGE_WINNER)
                 .stream()
                 .map(this::replacePlaceholders)
@@ -186,16 +177,12 @@ public abstract class Race implements Raceable, Announceable, Listener {
                 .map(s -> s.replace("<player>", player.getName()))
                 .map(s -> s.replace("<time>", timeManager.getTimeString()))
                 .collect(Collectors.toList());
-        if (center) {
-            Printer.broadcast(Printer.centerMessage(messageList));
-            return;
-        }
         Printer.broadcast(messageList);
     }
 
     public void onWinning(Player player) {
         afterRaceEnd();
-        if (isAnnounceEndEnabled()) announceWinner(isCenterMessages(), player);
+        if (isAnnounceEndEnabled()) announceWinner(player);
         if (isFireWorkEnabled()) FireWorkUtil.shootFireWorkSync(player);
         this.raceTask.cancel();
         rewardManager.executeRandomRewardSync(EventEntry.getRewardIds(), player);
@@ -209,6 +196,22 @@ public abstract class Race implements Raceable, Announceable, Listener {
     public void disable() {
         afterRaceEnd();
         if (!raceTask.isCancelled()) raceTask.cancel();
+    }
+
+    public boolean raceChecks(Player player) {
+        if (player == null) return true;
+        if (!raceManager.isCreativeAllowed()) {
+            if (player.getGameMode() == GameMode.CREATIVE) return true;
+        }
+        return !raceManager.isWorldAllowed(player.getWorld().getName());
+    }
+
+    protected boolean isInactive() {
+        return !isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public boolean isEnabled() {
@@ -261,22 +264,6 @@ public abstract class Race implements Raceable, Announceable, Listener {
 
     public int getDurationSeconds() {
         return settingManager.getInt(type, RaceSetting.DURATION);
-    }
-
-    protected boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public boolean raceChecks(Player player) {
-        if (player == null) return true;
-        if (!raceManager.isCreativeAllowed()) {
-            if (player.getGameMode() == GameMode.CREATIVE) return true;
-        }
-        return !raceManager.isWorldAllowed(player.getWorld().getName());
     }
 
 }

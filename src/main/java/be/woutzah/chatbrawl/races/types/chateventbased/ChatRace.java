@@ -37,7 +37,7 @@ public abstract class ChatRace extends Race {
     @EventHandler
     public void checkAnswerInChat(AsyncChatEvent e) {
         Printer.printConsole("Answer is checked");
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = e.getPlayer();
         if (raceChecks(player)) return;
         String message = Printer.stripColors(e.originalMessage());

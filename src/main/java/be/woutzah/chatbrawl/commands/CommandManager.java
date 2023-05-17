@@ -52,7 +52,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            Printer.sendParsedMessage("&cMake sure to type a subcommand!", sender);
+            Printer.sendParsedMessage("<red>Make sure to type a subcommand!", sender);
             return true;
         }
 
@@ -63,7 +63,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return true;
         }
         if (!target.isCanConsoleUse() && !(sender instanceof Player)) {
-            Printer.sendParsedMessage("&cOnly players can use this subcommand!", sender);
+            Printer.sendParsedMessage("<red>Only players can use this subcommand!", sender);
             return true;
         }
         if (!target.getPermission().equalsIgnoreCase("none")) {
@@ -76,7 +76,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         try {
             target.execute(sender, remapArgs(args));
         } catch (Exception e) {
-            Printer.sendParsedMessage("&cAn error has occurred while performing the command!", sender);
+            Printer.sendParsedMessage("<red>An error has occurred while performing the command!", sender);
             e.printStackTrace();
         }
         return true;

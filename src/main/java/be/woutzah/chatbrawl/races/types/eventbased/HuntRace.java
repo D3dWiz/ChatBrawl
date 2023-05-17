@@ -43,7 +43,7 @@ public class HuntRace extends EventRace {
 
     @EventHandler
     public void checkMobsKilled(EntityDeathEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = e.getEntity().getKiller();
         if (raceChecks(player)) return;
         EntityType killedEntityType = e.getEntity().getType();

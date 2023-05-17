@@ -10,11 +10,12 @@ words:
       - 2
 enable-firework: true
 enable-bossbar: true
+# Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
 bossbar-color: BLUE
+# Styles: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
 bossbar-style: PROGRESS
 enable-actionbar: true
 broadcast:
-  center-messages: false
   enable-start: true
   enable-end: true
 sound:
@@ -22,27 +23,27 @@ sound:
   begin-race: BLOCK_ANVIL_PLACE
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
-  bossbar: '&6&oScramble Race &7&l>> &fUnscramble the word &b<word>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oScramble Race &7&l>> &fUnscramble the word &b<word>. &7Time left: &b<timeLeft>'
+  bossbar: '<gold><i>Scramble Race <gray><b>>></b> <white>Unscramble the word <aqua><word>. <gray>Time left: <aqua><timeLeft>'
+  actionbar: '<gold><i>Scramble Race <gray><b>>></b> <white>Unscramble the word <aqua><word>. <gray>Time left: <aqua><timeLeft>'
   start:
     - ' '
-    - '&7&l>&m======&r&7{ &7(&e!&7) &6Scramble Race &7(&e!&7) &7}&m======&r&7&l>'
+    - '<gray><b>></b><st>======<reset><gray>{ <gray>(<yellow>!<gray>) <gold>Scramble Race <gray>(<yellow>!<gray>) <gray>}<st>======<reset><gray><b>>'
     - ' '
-    - ' &fUnscramble the following word:'
+    - ' <white>Unscramble the following word:'
     - ' '
-    - '        &b<word>'
+    - '        <aqua><word>'
     - ' '
-    - '&7&l>&m===========================&r&7&l>'
+    - '<gray><b>></b><st>===========================<reset><gray><b>>'
     - ' '
   ended:
-    - '&7The &6Scramble Race &7ended without a winner! The word was &b<answer>'
+    - '<gray>The <gold>Scramble Race <gray>ended without a winner! The word was <aqua><answer>'
   winner:
     - ' '
-    - '&7&l>&m====&r&7{ &7(&e*&7) &6Scramble Race Winner &7(&e*&7) &7}&m====&r&7&l>'
+    - '<gray><b>></b><st>====<reset><gray>{ <gray>(<yellow>*<gray>) <gold>Scramble Race Winner <gray>(<yellow>*<gray>) <gray>}<st>====<reset><gray><b>>'
     - ' '
-    - ' &fCongrats! &b<player> &fwas the fastest!'
-    - ' &fThe word was: &b<answer>'
+    - ' <white>Congrats! <aqua><player> <white>was the fastest!'
+    - ' <white>The word was: <aqua><answer>'
     - ' '
-    - '&7&l>&m==============================&r&7&l>'
+    - '<gray><b>></b><st>==============================<reset><gray><b>>'
     - ' '
-  winner-personal: '&7you won the &eScramble Race&7!'
+  winner-personal: '<gray>You won the <yellow>Scramble Race<gray>!'

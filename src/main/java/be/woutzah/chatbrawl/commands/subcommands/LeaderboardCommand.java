@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LeaderboardCommand extends SubCommand {
 
@@ -34,7 +35,7 @@ public class LeaderboardCommand extends SubCommand {
         Player player = (Player) sender;
         if (leaderboardManager == null) {
             Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
-                    "&cMySQL has not been configured!", player);
+                    "<red>MySQL has not been configured!", player);
             return;
         }
         if (args.length <= 0) {
@@ -49,7 +50,7 @@ public class LeaderboardCommand extends SubCommand {
                     settingManager.getStringList(LeaderboardSetting.TOTAL_HEADER).forEach(sb::append);
                     winsUsers.forEach(user -> sb.append(settingManager.getString(LeaderboardSetting.TOTAL_ENTRY)
                             .replace("<rank>", String.valueOf(user.getRank()))
-                            .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
+                            .replace("<player>", Objects.requireNonNull(Bukkit.getOfflinePlayer(user.getUuid()).getName()))
                             .replace("<wins>", String.valueOf(user.getWins()))));
                     settingManager.getStringList(LeaderboardSetting.TOTAL_FOOTER).forEach(sb::append);
                     Printer.sendParsedMessage(sb.toString(), player);
@@ -83,7 +84,7 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<race>", Printer.capitalize(finalRaceType.toString().toLowerCase()) + " Race")));
                             winsUsers.forEach(user -> sb.append(settingManager.getString(LeaderboardSetting.TOTALRACE_ENTRY)
                                     .replace("<rank>", String.valueOf(user.getRank()))
-                                    .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
+                                    .replace("<player>", Objects.requireNonNull(Bukkit.getOfflinePlayer(user.getUuid()).getName()))
                                     .replace("<wins>", String.valueOf(user.getWins()))));
                             settingManager.getStringList(LeaderboardSetting.TOTALRACE_FOOTER).forEach(sb::append);
                             Printer.sendParsedMessage(sb.toString(), player);
@@ -96,7 +97,7 @@ public class LeaderboardCommand extends SubCommand {
                                     .replace("<race>", Printer.capitalize(finalRaceType.toString().toLowerCase()) + " Race")));
                             timeUsers.forEach(user -> sb.append(settingManager.getString(LeaderboardSetting.FASTESTRACE_ENTRY)
                                     .replace("<rank>", String.valueOf(user.getRank()))
-                                    .replace("<player>", Bukkit.getOfflinePlayer(user.getUuid()).getName())
+                                    .replace("<player>", Objects.requireNonNull(Bukkit.getOfflinePlayer(user.getUuid()).getName()))
                                     .replace("<time>", timeManager.formatTime(user.getSeconds()))));
                             settingManager.getStringList(LeaderboardSetting.FASTESTRACE_FOOTER).forEach(sb::append);
                             Printer.sendParsedMessage(sb.toString(), player);
@@ -126,7 +127,7 @@ public class LeaderboardCommand extends SubCommand {
                         leaderboardManager.getMostWinsForUser(offlinePlayer.getUniqueId()).thenAccept(raceWinsMap -> {
                             StringBuilder sb = new StringBuilder();
                             settingManager.getStringList(LeaderboardSetting.TOTALUSER_HEADER).forEach(s -> sb.append(s
-                                    .replace("<user>", offlinePlayer.getName())));
+                                    .replace("<user>", Objects.requireNonNull(offlinePlayer.getName()))));
                             raceWinsMap.keySet().forEach(race -> sb.append(settingManager.getString(LeaderboardSetting.TOTALUSER_ENTRY)
                                     .replace("<race>", Printer.capitalize(race.toString().toLowerCase()) + " Race")
                                     .replace("<wins>", String.valueOf(raceWinsMap.get(race)))));
@@ -138,7 +139,7 @@ public class LeaderboardCommand extends SubCommand {
                         leaderboardManager.getFastestTimeForUser(offlinePlayer.getUniqueId()).thenAccept(fastestTimesMap -> {
                             StringBuilder sb = new StringBuilder();
                             settingManager.getStringList(LeaderboardSetting.FASTESTUSER_HEADER).forEach(s -> sb.append(s
-                                    .replace("<user>", offlinePlayer.getName())));
+                                    .replace("<user>", Objects.requireNonNull(offlinePlayer.getName()))));
                             fastestTimesMap.keySet().forEach(race -> sb.append(settingManager.getString(LeaderboardSetting.FASTESTUSER_ENTRY)
                                     .replace("<race>", Printer.capitalize(race.toString().toLowerCase()) + " Race")
                                     .replace("<time>", timeManager.formatTime(fastestTimesMap.get(race)))));

@@ -52,10 +52,10 @@ public class Metrics {
             config
                     .options()
                     .header(
-                            "bStats (https://bStats.org) collects some basic information for plugin authors, like how\n"
-                                    + "many people use their plugin and their total player count. It's recommended to keep bStats\n"
-                                    + "enabled, but if you're not comfortable with this, you can turn this setting off. There is no\n"
-                                    + "performance penalty associated with having metrics enabled, and data sent to bStats is fully\n"
+                            "bStats (https://bStats.org) collects some basic information for plugin authors, like how"
+                                    + "many people use their plugin and their total player count. It's recommended to keep bStats"
+                                    + "enabled, but if you're not comfortable with this, you can turn this setting off. There is no"
+                                    + "performance penalty associated with having metrics enabled, and data sent to bStats is fully"
                                     + "anonymous.")
                     .copyDefaults(true);
             try {
@@ -344,7 +344,7 @@ public class Metrics {
                         new String(new byte[]{'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's'});
                 final String examplePackage =
                         new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
-                // We want to make sure no one just copy & pastes the example and uses the wrong package
+                // We want to make sure no one just copy <red> pastes the example and uses the wrong package
                 // names
                 if (MetricsBase.class.getPackage().getName().startsWith(defaultPackage)
                         || MetricsBase.class.getPackage().getName().startsWith(examplePackage)) {
@@ -654,7 +654,7 @@ public class Metrics {
          * Escapes the given string like stated in https://www.ietf.org/rfc/rfc4627.txt.
          *
          * <p>This method escapes only the necessary characters '"', '\'. and '\u0000' - '\u001F'.
-         * Compact escapes are not used (e.g., '\n' is escaped as "\u000a" and not as "\n").
+         * Compact escapes are not used (e.g., '' is escaped as "\u000a" and not as "").
          *
          * @param value The value to escape.
          * @return The escaped value.

@@ -43,7 +43,7 @@ public class BlockRace extends EventRace {
 
     @EventHandler
     public void checkBlocksMined(BlockBreakEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = e.getPlayer();
         if (raceChecks(player)) return;
         Block minedBlock = e.getBlock();

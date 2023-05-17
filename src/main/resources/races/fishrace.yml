@@ -16,7 +16,6 @@ bossbar-color: BLUE
 bossbar-style: PROGRESS
 enable-actionbar: true
 broadcast:
-  center-messages: false
   enable-start: true
   enable-end: true
 sound:
@@ -25,26 +24,26 @@ sound:
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
   # Language Placeholders: <prefix>, <amount>, <block>, <player>, <timeLeft>
-  bossbar: '&6&oFish Race &7&l>> &fFish &b<amount> &fx &b<fish>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oFish Race &7&l>> &fFish &b<amount> &fx &b<fish>. &7Time left: &b<timeLeft>'
+  bossbar: '<gold><i>Fish Race <gray><b>>></b> <white>Fish <aqua><amount> <white>x <aqua><fish>. <gray>Time left: <aqua><timeLeft>'
+  actionbar: '<gold><i>Fish Race <gray><b>>></b> <white>Fish <aqua><amount> <white>x <aqua><fish>. <gray>Time left: <aqua><timeLeft>'
   start:
     - ' '
-    - '&7&l>&m=======&r&7{ &7(&e!&7) &6Fish Race &7(&e!&7) &7}&m======&r&7&l>'
+    - '<gray><b>></b><st>=======<reset><gray>{ <gray>(<yellow>!<gray>) <gold>Fish Race <gray>(<yellow>!<gray>) <gray>}<st>======<reset><gray><b>>'
     - ' '
-    - ' &fCatch the following fish:'
+    - ' <white>Catch the following fish:'
     - ' '
-    - '       &b<amount> &fx &b<fish>'
+    - '       <aqua><amount> <white>x <aqua><fish>'
     - ' '
-    - '&7&l>&m===========================&r&7&l>'
+    - '<gray><b>></b><st>===========================<reset><gray><b>>'
     - ' '
   ended:
-    - '&7The &6Fish Race &7ended without a winner!'
+    - '<gray>The <gold>Fish Race <gray>ended without a winner!'
   winner:
     - ' '
-    - '&7&l>&m=====&r&7{ &7(&e*&7) &6Fish Race Winner &7(&e*&7) &7}&m=====&r&7&l>'
+    - '<gray><b>></b><st>=====<reset><gray>{ <gray>(<yellow>*<gray>) <gold>Fish Race Winner <gray>(<yellow>*<gray>) <gray>}<st>=====<reset><gray><b>>'
     - ' '
-    - ' &fCongrats! &b<player> &fwas the fastest!'
+    - ' <white>Congrats! <aqua><player> <white>was the fastest!'
     - ' '
-    - '&7&l>&m==============================&r&7&l>'
+    - '<gray><b>></b><st>==============================<reset><gray><b>>'
     - ' '
-  winner-personal: '&7you won the &eFish Race&7!'
+  winner-personal: '<gray>You won the <yellow>Fish Race<gray>!'

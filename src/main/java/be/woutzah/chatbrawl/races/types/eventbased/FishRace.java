@@ -46,7 +46,7 @@ public class FishRace extends EventRace {
 
     @EventHandler
     public void checkFishedObjects(PlayerFishEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         Player player = e.getPlayer();
         if (raceChecks(player)) return;
         if (e.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {

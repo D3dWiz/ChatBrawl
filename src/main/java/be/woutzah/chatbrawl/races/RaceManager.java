@@ -5,9 +5,9 @@ import be.woutzah.chatbrawl.contestants.ContestantsManager;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;
 import be.woutzah.chatbrawl.races.types.Race;
 import be.woutzah.chatbrawl.races.types.RaceType;
-import be.woutzah.chatbrawl.races.types.chateventbased.quizrace.QuizRace;
-import be.woutzah.chatbrawl.races.types.chateventbased.scramblerace.ScrambleRace;
-import be.woutzah.chatbrawl.races.types.chateventbased.typerace.TypeRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.ChatEntry;
+import be.woutzah.chatbrawl.races.types.chateventbased.ScrambleRace;
+import be.woutzah.chatbrawl.races.types.chateventbased.TypeRace;
 import be.woutzah.chatbrawl.races.types.eventbased.*;
 import be.woutzah.chatbrawl.rewards.RewardManager;
 import be.woutzah.chatbrawl.settings.GeneralSetting;
@@ -53,7 +53,7 @@ public class RaceManager {
                 RaceType.FISH, new FishRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
                 RaceType.FOOD, new FoodRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
                 RaceType.HUNT, new HuntRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
-                RaceType.QUIZ, new QuizRace(this, settingManager, rewardManager, timeManager, leaderboardManager),
+                RaceType.QUIZ, new ChatEntry.QuizRace(this, settingManager, rewardManager, timeManager, leaderboardManager),
                 RaceType.CRAFT, new CraftRace(this, settingManager, rewardManager, timeManager, contestantsManager, leaderboardManager),
                 RaceType.SCRAMBLE, new ScrambleRace(this, settingManager, rewardManager, timeManager, leaderboardManager)
         ));

@@ -19,7 +19,6 @@ bossbar-color: BLUE
 bossbar-style: PROGRESS
 enable-actionbar: true
 broadcast:
-  center-messages: false
   enable-start: true
   enable-end: true
 sound:
@@ -28,27 +27,27 @@ sound:
   end-race: BLOCK_NOTE_BLOCK_PLING
 language:
   # Language Placeholders: <prefix>, <amount>, <block>, <player>, <timeLeft>
-  bossbar: '&6&oQuiz Race &7&l>> &fAnswer &b<question>. &7Time left: &b<timeLeft>'
-  actionbar: '&6&oQuiz Race &7&l>> &fAnswer &b<question>'
+  bossbar: '<gold><i>Quiz Race <gray><b>>></b> <white>Answer <aqua><question>. <gray>Time left: <aqua><timeLeft>'
+  actionbar: '<gold><i>Quiz Race <gray><b>>></b> <white>Answer <aqua><question>'
   start:
     - ' '
-    - '&7&l>&m========&r&7{ &7(&e!&7) &6Quiz Race &7(&e!&7) &7}&m=======&r&7&l>'
+    - '<gray><b>></b><st>========<reset><gray>{ <gray>(<yellow>!<gray>) <gold>Quiz Race <gray>(<yellow>!<gray>) <gray>}<st>=======<reset><gray><b>>'
     - ' '
-    - ' &fAnswer the following question:'
+    - ' <white>Answer the following question:'
     - ' '
-    - '    &b<question>'
+    - '    <aqua><question>'
     - ' '
-    - '&7&l>&m===========================&r&7&l>'
+    - '<gray><b>></b><st>===========================<reset><gray><b>>'
     - ' '
   ended:
-    - '&7The &6Quiz Race &7ended without a winner! The answer was &b<answer>'
+    - '<gray>The <gold>Quiz Race <gray>ended without a winner! The answer was <aqua><answer>'
   winner:
     - ' '
-    - '&7&l>&m======&r&7{ &7(&e*&7) &6Quiz Race Winner &7(&e*&7) &7}&m=====&r&7&l>'
+    - '<gray><b>></b><st>======<reset><gray>{ <gray>(<yellow>*<gray>) <gold>Quiz Race Winner <gray>(<yellow>*<gray>) <gray>}<st>=====<reset><gray><b>>'
     - ' '
-    - ' &fCongrats! &b<player> &fwas the fastest!'
-    - ' &fThe answer was: &b<answer>'
+    - ' <white>Congrats! <aqua><player> <white>was the fastest!'
+    - ' <white>The answer was: <aqua><answer>'
     - ' '
-    - '&7&l>&m==============================&r&7&l>'
+    - '<gray><b>></b><st>==============================<reset><gray><b>>'
     - ' '
-  winner-personal: '&7you won the &eQuiz Race&7!'
+  winner-personal: '<gray>You won the <yellow>Quiz Race<gray>!'

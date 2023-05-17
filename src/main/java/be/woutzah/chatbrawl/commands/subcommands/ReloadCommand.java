@@ -29,6 +29,6 @@ public class ReloadCommand extends SubCommand {
         HandlerList.unregisterAll(plugin);
         plugin.init();
         Printer.sendParsedMessage(settingManager.getString(GeneralSetting.PLUGIN_PREFIX) +
-                "&eChatBrawl V" + plugin.getDescription().getVersion() + " &fhas been &areloaded&f!", sender);
+                "<yellow>ChatBrawl V" + plugin.getPluginMeta().getVersion() + " <white>has been <red>areloaded<white>!", sender);
     }
 }

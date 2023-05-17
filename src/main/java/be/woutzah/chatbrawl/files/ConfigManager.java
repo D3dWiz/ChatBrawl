@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigManager {
 
     private final ChatBrawl plugin;
@@ -43,23 +44,22 @@ public class ConfigManager {
             if (inputStream == null) return;
             YamlConfiguration resourceConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream));
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            final List<String> HEADER = Arrays.asList("""
-                       
-                       _____ _           _   ____                     _
-                      / ____| |         | | |  _ \\                   | |
-                     | |    | |__   __ _| |_| |_) |_ __ __ ___      _| |
-                     | |    | '_ \\ / _` | __|  _ <| '__/ _` \\ \\ /\\ / / |
-                     | |____| | | | (_| | |_| |_) | | | (_| |\\ V  V /| |
-                      \\_____|_| |_|\\__,_|\\__|____/|_|  \\__,_| \\_/\\_/ |_|
-                                                                      
-                      For a detailed explanation of all settings visit:
-                          https://github.com/woutzah/ChatBrawl/wiki    
-                      
-                        Need help? Join the Discord server: https://discord.gg/TvTUWvG
-                        
-                     BossBar Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
-                     BossBar Overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
-                    """.split("\\n"));
+            final List<String> HEADER = Arrays.asList("""   
+                      _____ _           _   ____                     _
+                    #  / ____| |         | | |  _ \\                   | |
+                    # | |    | |__   __ _| |_| |_) |_ __ __ ___      _| |
+                    # | |    | '_ \\ / _` | __|  _ <| '__/ _` \\ \\ /\\ / / |
+                    # | |____| | | | (_| | |_| |_) | | | (_| |\\ V  V /| |
+                    #  \\_____|_| |_|\\__,_|\\__|____/|_|  \\__,_| \\_/\\_/ |_|
+                    #                                                  
+                    #  For a detailed explanation of all settings visit:
+                    #      https://github.com/woutzah/ChatBrawl/wiki    
+                    #  
+                    #    Need help? Join the Discord server: https://discord.gg/TvTUWvG
+                    #    
+                    # BossBar Colors: BLUE, GREEN, RED, PINK, PURPLE, WHITE, YELLOW
+                    # BossBar Overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
+                    """.split("/(\\r\\n|\\r|\\n)/"));
             config.options().setHeader(HEADER);
             config.options().parseComments(true);
             config.addDefaults(resourceConfig);

@@ -1,4 +1,4 @@
-package be.woutzah.chatbrawl.races.types.chateventbased.typerace;
+package be.woutzah.chatbrawl.races.types.chateventbased;
 
 import be.woutzah.chatbrawl.files.ConfigType;
 import be.woutzah.chatbrawl.leaderboard.LeaderboardManager;

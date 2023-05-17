@@ -1,44 +1,44 @@
 leaderboard-total:
   header:
-    - '&7&l>&m=======&r&7{ &7(&e#&7) &6Total Wins &7(&e#&7) &7}&m=======&r&7&l>\n'
-    - ' \n'
-  entry: '    &6#<rank> &7&l>> &b<player> &f- &e<wins> wins\n'
+    - '<gray><b>></b></b><st>=======<reset><gray>{ <gray>(<yellow>#<gray>) <gold>Total Wins <gray>(<yellow>#<gray>) <gray>}<st>=======<reset><gray><b>></b></b>'
+    - ' '
+  entry: '    <gold>#<rank> <gray><b>>></b> <aqua><player> <white>- <yellow><wins> wins'
   footer:
-    - ' \n'
-    - '&7&l>&m============================&r&7&l>\n'
+    - ' '
+    - '<gray><b>></b><st>============================<reset><gray><b>>'
 
 leaderboard-total-for-race:
   header:
-    - '&7&l>&m=======&r&7{ &7(&e#&7) &6<race> Wins &7(&e#&7) &7}&m=======&r&7&l>\n'
-    - ' \n'
-  entry: '    &6#<rank> &7&l>> &b<player> &f- &e<wins> wins\n'
+    - '<gray><b>></b><st>=======<reset><gray>{ <gray>(<yellow>#<gray>) <gold><race> Wins <gray>(<yellow>#<gray>) <gray>}<st>=======<reset><gray><b>>'
+    - ' '
+  entry: '    <gold>#<rank> <gray><b>>></b> <aqua><player> <white>- <yellow><wins> wins'
   footer:
-    - ' \n'
-    - '&7&l>&m============================&r&7&l>\n'
+    - ' '
+    - '<gray><b>></b><st>============================<reset><gray><b>>'
 
 leaderboard-fastest-for-race:
   header:
-    - '&7&l>&m=======&r&7{ &7(&e#&7) &6<race> Time &7(&e#&7) &7}&m=======&r&7&l>\n'
-    - ' \n'
-  entry: '    &6#<rank> &7&l>> &b<player> &f- &e<time>\n'
+    - '<gray><b>></b><st>=======<reset><gray>{ <gray>(<yellow>#<gray>) <gold><race> Time <gray>(<yellow>#<gray>) <gray>}<st>=======<reset><gray><b>>'
+    - ' '
+  entry: '    <gold>#<rank> <gray><b>>></b> <aqua><player> <white>- <yellow><time>'
   footer:
-    - ' \n'
-    - '&7&l>&m============================&r&7&l>\n'
+    - ' '
+    - '<gray><b>></b><st>============================<reset><gray><b>>'
 
 leaderboard-total-for-user:
   header:
-    - '&7&l>&m=======&r&7{ &7(&e#&7) &6<user> Wins &7(&e#&7) &7}&m=======&r&7&l>\n'
-    - ' \n'
-  entry: '    &b<race> &f- &e<wins> wins\n'
+    - '<gray><b>></b><st>=======<reset><gray>{ <gray>(<yellow>#<gray>) <gold><user> Wins <gray>(<yellow>#<gray>) <gray>}<st>=======<reset><gray><b>>'
+    - ' '
+  entry: '    <aqua><race> <white>- <yellow><wins> wins'
   footer:
-    - ' \n'
-    - '&7&l>&m============================&r&7&l>\n'
+    - ' '
+    - '<gray><b>></b><st>============================<reset><gray><b>>'
 
 leaderboard-fastest-for-user:
   header:
-    - '&7&l>&m=======&r&7{ &7(&e#&7) &6<user> Time &7(&e#&7) &7}&m=======&r&7&l>\n'
-    - ' \n'
-  entry: '    &b<race> &f- &e<time>\n'
+    - '<gray><b>></b><st>=======<reset><gray>{ <gray>(<yellow>#<gray>) <gold><user> Time <gray>(<yellow>#<gray>) <gray>}<st>=======<reset><gray><b>>'
+    - ' '
+  entry: '    <aqua><race> <white>- <yellow><time>'
   footer:
-    - ' \n'
-    - '&7&l>&m============================&r&7&l>\n'
+    - ' '
+    - '<gray><b>></b><st>============================<reset><gray><b>>'

@@ -1,4 +1,4 @@
-plugin-prefix: '&6&lCB &7&l>> &r'
+plugin-prefix: '<gold><b>CB</b> <gray><b>></b><b>></b> <reset>'
 auto-create-races: true
 race-delay: 1200
 notify-on-login: true

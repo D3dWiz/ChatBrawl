@@ -44,7 +44,7 @@ public abstract class EventRace extends Race {
 
     @EventHandler
     public void addContestant(PlayerJoinEvent e) {
-        if (!isActive()) return;
+        if (isInactive()) return;
         contestantsManager.addContestant(e.getPlayer().getUniqueId());
     }
 
@@ -57,15 +57,10 @@ public abstract class EventRace extends Race {
         String newMessage = message;
         if (message.contains("<mob>")) {
             newMessage = newMessage.replace("<mob>", Printer.capitalize(eventEntry.getEntityType().toString().toLowerCase().replace("_", " ")));
-        } else if (message.contains("<block>")) {
-            newMessage = newMessage.replace("<block>", Printer.capitalize(eventEntry.getMaterial().toString().toLowerCase().replace("_", " ")));
-        } else if (message.contains("<item>")) {
-            newMessage = newMessage.replace("<item>", Printer.capitalize(eventEntry.getMaterial().toString().toLowerCase().replace("_", " ")));
-        } else if (message.contains("<fish>")) {
-            newMessage = newMessage.replace("<fish>", Printer.capitalize(eventEntry.getMaterial().toString().toLowerCase().replace("_", " ")));
         }
         return newMessage
                 .replace("<amount>", String.valueOf(eventEntry.getAmount()))
-                .replace("<prefix>", settingManager.getString(GeneralSetting.PLUGIN_PREFIX));
+                .replace("<prefix>", settingManager.getString(GeneralSetting.PLUGIN_PREFIX))
+                .replaceAll("<(block|item|fish|food)>", Printer.capitalize(eventEntry.getMaterial().toString().toLowerCase().replace("_", " ")));
     }
 }

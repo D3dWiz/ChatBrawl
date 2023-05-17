@@ -3,13 +3,13 @@ package be.woutzah.chatbrawl.races.types;
 import org.bukkit.entity.Player;
 
 public interface Announceable {
-    void announceStart(boolean center);
+    void announceStart();
 
     void sendStart(Player player);
 
     void announceEnd();
 
-    void announceWinner(boolean center, Player player);
+    void announceWinner(Player player);
 
     void showBossBar();
 
@@ -18,5 +18,6 @@ public interface Announceable {
     void showActionBar();
 
     void stopActionBar();
+
     String replacePlaceholders(String message);
 }

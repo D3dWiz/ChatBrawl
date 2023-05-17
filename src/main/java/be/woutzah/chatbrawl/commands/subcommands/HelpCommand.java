@@ -18,6 +18,6 @@ public class HelpCommand extends SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Printer.sendParsedMessage(settingManager.getStringList(LanguageSetting.HELPMENU), sender);
+        Printer.sendMultilineParsedMessage(settingManager.getStringList(LanguageSetting.HELPMENU), sender);
     }
 }
